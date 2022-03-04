@@ -68,7 +68,7 @@ git clone 本项目
 
 [见文件夹开发笔记](https://github.com/zhanghaok/LostAndFoundSystem/tree/main/%E6%88%91%E7%9A%84%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91%E7%AC%94%E8%AE%B0)
 
-## 最后欢迎star~~
+## 最后欢迎star♥♥~~
 
 如果你有任何问题，请3250514239@qq.com联系我~~~
 
