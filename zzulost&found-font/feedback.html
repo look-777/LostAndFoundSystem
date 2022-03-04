@@ -1,0 +1,210 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我要反馈</title>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+	<link rel="stylesheet" href="static/lib/editormd/css/editormd.min.css">
+    <link rel="stylesheet" href="css/me1.css" >
+</head>
+<body>
+<!-- 导航 -->
+<nav class="ui  attached segment m-padded-tb-mini">
+	<div class="ui container">
+		<div class="ui tabular attached stackable menu">
+			<div class="ui container">
+				<div class="item">
+					<img src="img/zzulogo.png" style="width: 60px;height: 60px">
+					<h2 class="ui teal header item">寻物小帮手</h2>
+				</div>
+				<a class="item" href="foundhall.html"><i class="search minus icon"></i>寻物大厅</a>
+				<a class="item" href="losshall.html"><i class="globe icon"></i>失物大厅</a>
+				<a class="item" href="showdata.html">
+					<i class="chart bar outline icon"></i>数据观星
+				</a>
+				<a class="item" href="announce.html">
+					<i class="edit icon"></i>我要发布
+				</a>
+				<a class="active item" href="about.html">
+					<i class="user icon"></i>个人中心
+				</a>
+
+
+				<div class="right item">
+					<div class="ui simple dropdown item">
+						<img class="ui avatar image" src="https://unsplash.it/100/100?image=1005">
+						<i class="dropdown icon"></i>
+						<div class="menu">
+							<a class="teal item" target="_blank" href="mail.html"><i class="envelope outline icon"></i>收件箱
+								<div class="ui red label">1</div>
+							</a>
+							<a class="item" href="admin/index.html" id="adminsys" style="display: none"><i class="user circle icon"></i>进入管理系统</a>
+							<a class="item" href="feedback.html"><i class="phone square icon"></i>反馈</a>
+							<a class="item" href="login.html"><i class="sign-out icon"></i>退出</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</nav>
+
+
+	<!-- 中间内容 -->
+	<div class="m-container m-padded-tb-large">
+		<div class="ui container">
+			<div class="ui stackable grid">
+				<div class="sixteen wide column">
+					<div class="ui top segment ">
+						<div class="column">
+							<h3 class="ui  teal header"><i class="phone square icon"></i> 反馈</h3>
+						</div>
+					</div>
+					<div class="ui red top attached segment">
+
+						<div class="ui padded vertical segment m-padded-tb-large">
+							<div class="ui mobile reversed stackable grid">
+									<div class="ui form" style="width: 100%; height: 100%;min-height:100px">
+										<div class="required field">
+											<label><span class="ui header">标题:</span></label> 
+											<input name="title" id="title" type="text"   maxlength="20">
+											 <div class="ui pointing label">
+												 请写一个反馈标题
+											 </div>
+										 </div>
+									    <div class="required field ">
+											<label><span class="ui header">反馈内容:</span></label>
+											<div id="md-content" style="z-index: 1 !important;">
+											<!-- mardown区域 -->
+											<textarea name="content" id="content"  placeholder="你想反馈什么呢"></textarea>
+											</div>
+											<div class="ui pointing label">
+											请您提出宝贵的意见。
+											</div>
+									    </div>
+										<div class="actions">
+<!--											<div class="ui primary submit button">Submit</div>-->
+										    <input onclick="addInfo()" type="button"  class="ui primary right floated m-margin-tb-large  button" value="反馈">
+										</div>
+									</div>
+
+							</div>
+						</div>
+<!--						<div class="ui error message"></div>-->
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+<!--发布成功后提示框-->
+<div class="ui basic modal" id="modelclaim">
+	<div class="ui icon header">
+		<i class="bell outline icon"></i>
+		反馈成功
+	</div>
+	<div class="actions">
+		<div class="ui green ok inverted  button">
+			<i class="checkmark icon"></i>
+			确定
+		</div>
+	</div>
+</div>
+
+    <!--	/*/<th:block th:replace="fragment::script">/*/-->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.2/dist/jquery.min.js"></script>
+	<script src="js/semantic.min.js"></script>
+	<script src="https://cdn.bootcdn.net/ajax/libs/mustache.js/4.1.0/mustache.js"></script>
+	<script src="static/lib/editormd/editormd.min.js"></script>
+	<script src="js/axios.js"></script>
+
+    <!--    /*/</th:block>/*/-->
+    <script>
+
+		var userType = localStorage.getItem("type");
+		if (userType=="1"){
+			$("#adminsys").show();
+		}
+		//表单验证
+		$('.ui.form')
+				.form({
+					fields: {
+						title     : {
+							identifier: 'title',
+							rules: [
+								{
+									type   : 'empty',
+									prompt : '请输入反馈标题'
+								}
+							]
+						},
+						content     : {
+							identifier: 'content',
+							rules: [
+								{
+									type   : 'empty',
+									prompt : '请输入反馈内容'
+								}
+							]
+						}
+					}
+				})
+		;
+
+		//添加启示信息
+		function addInfo() {
+			//获取值信息
+			//并发送信息到后台
+			//后台新增数据后跳转到主页
+
+			var title = document.getElementById("title").value;
+			var content = document.getElementById("content").value;
+			var values = {};
+			values.title=title;
+			values.content=content;
+
+			axios.post("http://127.0.0.1:8888/feedback/addfeeback",values).then(function (response) {
+
+				$("#modelclaim").modal({
+					closable  : false,
+					onDeny    : function(){
+
+					},
+					onApprove : function() {
+						window.location.href="/swzlweb/about.html";
+					}
+				}).modal('show')
+				;
+			}).catch(function (error) {
+				
+			})
+
+		}
+
+		//初始化markdown编辑器
+		var contentEditor;
+		$(function() {
+			contentEditor = editormd("md-content", {
+				width   : "100%",
+				height  : 450,
+				syncScrolling : "single",
+				path : "static/lib/editormd/lib/" //路径一定要写对,这个插件要自动寻找static文件夹的
+			});
+
+			/*
+            // or
+            testEditor = editormd({
+                id      : "test-editormd",
+                width   : "90%",
+                height  : 640,
+                path    : "../lib/"
+            });
+            */
+		});
+		
+        
+    </script>
+
+</body>
+</html>

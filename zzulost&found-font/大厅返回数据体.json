@@ -1,0 +1,101 @@
+{
+  "swzl":1,
+  "comments":[
+    {
+      "id":81,
+      "postId":47,
+      "uname":"张浩堃",
+      "content":"hahha ",
+      "ctime":"2021-05-08 17:42:41",
+      "parent":null,
+      "childlist":null
+    },
+    {
+      "id":80,
+      "postId":45,
+      "uname":"zhangxiaotian",
+      "content":"嗯嗯 ，谢谢各位，这个对我来说特别珍贵。",
+      "ctime":"2021-04-23 17:38:35",
+      "parent":null,
+      "childlist":null
+    },
+    {
+      "id":79,
+      "postId":45,
+      "uname":"zhangxiaotian",
+      "content":"同志们我找到了啊，谢谢各位hxdm",
+      "ctime":"2021-04-23 17:37:47",
+      "parent":null,
+      "childlist":null
+    },
+    {
+      "id":78,
+      "postId":50,
+      "uname":"张浩堃",
+      "content":"奥奥，明白了。",
+      "ctime":"2021-04-23 17:36:33",
+      "parent":null,
+      "childlist":null
+    },
+    {
+      "id":77,
+      "postId":50,
+      "uname":"匿名用户",
+      "content":"因为我是后台管理员，这个帖子是测试用的啊",
+      "ctime":"2021-04-23 17:36:17",
+      "parent":null,
+      "childlist":null
+    }
+  ],
+  "postlist":[
+    {
+      "id":51,
+      "uname":"张浩堃",
+      "typeName":"书本",
+      "title":"我捡到一本书",
+      "content":"我在操场东边捡到一本书《数据挖掘实战》",
+      "picture":"/images/3b1aaf99e44941f78aa2a72fd05e757e_1.png",
+      "address":"操场东大门",
+      "ctime":"2021-04-08 15:59:37",
+      "status":0,
+      "flag":1,
+      "viewCount":8,
+      "counts":0,
+      "user":null,
+      "commentList":null
+    },
+    {
+      "id":47,
+      "uname":"zhangxinyan",
+      "typeName":"书本",
+      "title":"捡到一本书",
+      "content":"我今天下午在操场主席台捡到一本《数据分析之图算法》",
+      "picture":"/images/shuben.jpg",
+      "address":"操场",
+      "ctime":"2021-04-07 21:33:25",
+      "status":1,
+      "flag":1,
+      "viewCount":6,
+      "counts":1,
+      "user":null,
+      "commentList":null
+    }
+  ],
+  "xuqs":1,
+  "typeVoList":[
+    {
+      "typeName":"书本",
+      "counts":2
+    }
+  ],
+  "newNotice":{
+    "id":16,
+    "cuser":"admin",
+    "content":"5月1号-3号我们的系统将更新，期间暂停服务，由此造成的不便，请谅解。",
+    "ctime":"2021-04-08 04:53:39",
+    "title":"系统升级通知"
+  },
+  "wxwqs":3,
+  "wswzl":1
+}
+

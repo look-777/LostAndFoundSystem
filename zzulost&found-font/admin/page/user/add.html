@@ -1,0 +1,100 @@
+<div class="layuimini-main">
+
+    <div class="layui-form layuimini-form">
+        <div class="layui-form-item">
+            <label class="layui-form-label required">用户名</label>
+            <div class="layui-input-block">
+                <input type="text" name="username" lay-verify="required" lay-reqtext="用户名不能为空" placeholder="请输入用户名" value="" class="layui-input">
+                <tip>填写自己管理账号的名称。</tip>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label required">密  码</label>
+            <div class="layui-input-block">
+                <input type="password" name="password" lay-verify="required" lay-reqtext="密码信息不能为空" placeholder="请输入密码信息" value="" class="layui-input">
+                <tip>填写密码信息。</tip>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label required">类  型</label>
+            <div class="layui-input-block">
+                <select name="type"  >
+                    <option value="">请选择</option>
+                    <option value="1">管理员</option>
+                    <option value="0">普通用户</option>
+                </select>
+            </div>
+        </div>
+
+
+
+        <div class="layui-form-item">
+            <label class="layui-form-label required">性别</label>
+            <div class="layui-input-block">
+                <input type="radio" name="sex" value="男" title="男" checked="">
+                <input type="radio" name="sex" value="女" title="女">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label required">年龄</label>
+            <div class="layui-input-block">
+                <input type="number" name="age" lay-verify="required" value="" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label required">邮箱</label>
+            <div class="layui-input-block">
+                <input type="email" name="email" placeholder="请输入邮箱" value="" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">格言</label>
+            <div class="layui-input-block">
+                <textarea name="personalSay" class="layui-textarea" placeholder="请输入个人格言信息"></textarea>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn layui-btn-normal" lay-submit lay-filter="saveBtn">确认保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    layui.use(['form', 'table','axios'], function () {
+        var form = layui.form,
+            layer = layui.layer,
+            table = layui.table,
+            axios=layui.axios,
+            $ = layui.$;
+
+        /**
+         * 初始化表单，要加上，不然刷新部分组件可能会不加载
+         */
+        form.render();
+
+        // 当前弹出层，防止ID被覆盖
+        var parentIndex = layer.index;
+
+        //监听提交
+        form.on('submit(saveBtn)', function (data) {
+            var datas=data.field;
+            //获取信息发送信息到后台服务器
+            axios.post('http://localhost:8888/user/add',datas).then(function (response){
+                if(response.code==200){
+                    layer.msg("添加成功");
+                    // 刷新主页面 table一块
+                    window.reload();
+                }
+                //关闭弹出信息
+                layer.close(parentIndex);
+            }).catch(function (error){
+                layer.msg(data.msg);
+            })
+            return false;
+        });
+
+    });
+</script>

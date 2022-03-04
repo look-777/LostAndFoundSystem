@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhanghk.dao.NoticeDao">
+
+    <!--查询单个-->
+    <select id="queryById" resultType="com.zhanghk.entity.Notice">
+        select
+          id, cuser, content, ctime, title
+        from swzl.notice
+        where id = #{id}
+    </select>
+
+
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultType="com.zhanghk.entity.Notice">
+        select
+        id, cuser, content, ctime, title
+        from swzl.notice
+        <where>
+
+            <if test="cuser != null and cuser != ''">
+                and cuser like '%${cuser}%'
+            </if>
+            <if test="content != null and content != ''">
+                and content like '%${content}%'
+            </if>
+            <if test="ctime != null">
+                and ctime like '%${ctime}%'
+            </if>
+            <if test="title != null and title != ''">
+                and title like '%${title}%'
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into swzl.notice(cuser, content, ctime, title)
+        values (#{cuser}, #{content}, now(), #{title})
+    </insert>
+
+
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update swzl.notice
+        <set>
+            <if test="cuser != null and cuser != ''">
+                cuser = #{cuser},
+            </if>
+            <if test="content != null and content != ''">
+                content = #{content},
+            </if>
+            <if test="ctime != null">
+                ctime = #{ctime},
+            </if>
+            <if test="title != null and title != ''">
+                title = #{title},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from swzl.notice where id = #{id}
+    </delete>
+
+    <!--查询最新的公告-->
+    <select id="queryByNewTime" resultType="com.zhanghk.entity.Notice">
+        select * from notice order by id desc limit 1
+    </select>
+
+</mapper>

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhanghk.dao.ClaimDao">
+
+    <resultMap type="com.zhanghk.entity.Claim" id="ClaimMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="postId" column="post_id" jdbcType="INTEGER"/>
+        <result property="userId" column="user_id" jdbcType="INTEGER"/>
+        <result property="postTitle" column="post_title" jdbcType="VARCHAR"/>
+        <result property="userName" column="user_name" jdbcType="VARCHAR"/>
+        <result property="claimTime" column="claim_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="ClaimMap">
+        select
+          id, post_id, user_id, post_title, user_name, claim_time
+        from swzl.claim
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="ClaimMap">
+        select
+          id, post_id, user_id, post_title, user_name, claim_time
+        from swzl.claim
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="ClaimMap">
+        select
+        id, post_id, user_id, post_title, user_name, claim_time
+        from swzl.claim
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="postId != null">
+                and post_id = #{postId}
+            </if>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+            <if test="postTitle != null and postTitle != ''">
+                and post_title = #{postTitle}
+            </if>
+            <if test="userName != null and userName != ''">
+                and user_name = #{userName}
+            </if>
+            <if test="claimTime != null">
+                and claim_time = #{claimTime}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into swzl.claim(post_id, user_id, post_title, user_name, claim_time)
+        values (#{postId}, #{userId}, #{postTitle}, #{userName}, #{claimTime})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into swzl.claim(post_id, user_id, post_title, user_name, claim_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.postId}, #{entity.userId}, #{entity.postTitle}, #{entity.userName}, #{entity.claimTime})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into swzl.claim(post_id, user_id, post_title, user_name, claim_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.postId}, #{entity.userId}, #{entity.postTitle}, #{entity.userName}, #{entity.claimTime})
+        </foreach>
+        on duplicate key update
+        post_id = values(post_id) , user_id = values(user_id) , post_title = values(post_title) , user_name =
+        values(user_name) , claim_time = values(claim_time)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update swzl.claim
+        <set>
+            <if test="postId != null">
+                post_id = #{postId},
+            </if>
+            <if test="userId != null">
+                user_id = #{userId},
+            </if>
+            <if test="postTitle != null and postTitle != ''">
+                post_title = #{postTitle},
+            </if>
+            <if test="userName != null and userName != ''">
+                user_name = #{userName},
+            </if>
+            <if test="claimTime != null">
+                claim_time = #{claimTime},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from swzl.claim where id = #{id}
+    </delete>
+
+</mapper>

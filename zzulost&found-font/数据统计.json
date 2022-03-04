@@ -1,0 +1,35 @@
+{
+    "swzl":1,
+    "userNum":9,
+    "xuqs":1,
+    "typeVoList":[
+        {
+            "typeName":"书本",
+            "counts":1
+        },
+        {
+            "typeName":"手机",
+            "counts":1
+        },
+        {
+            "typeName":"校园卡",
+            "counts":2
+        },
+        {
+            "typeName":"衣服",
+            "counts":1
+        }
+    ],
+    "post_03":0,
+    "post_04":1,
+    "wswzl":2,
+    "post_12":2,
+    "post_01":2,
+    "post_02":0,
+    "loss":3,
+    "found":2,
+    "rate":"66.67",
+    "wxwqs":1
+}
+
+

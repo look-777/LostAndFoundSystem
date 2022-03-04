@@ -1,0 +1,194 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>启示信息编辑</title>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+    <link rel="stylesheet" href="css/me1.css" >
+</head>
+<body>
+<!-- 导航 -->
+
+
+
+	<!-- 中间内容 -->
+	<div class="m-container-small m-padded-tb-large">
+		<div class="ui container" style="width: 85%;height: auto">
+			<div class="ui stackable grid">
+				<div class="sixteen wide column">
+					<div class="ui top segment ">
+						<div class="column">
+							<h3 class="ui teal header"><i class="edit outline  icon"></i> 启示信息编辑</h3>
+						</div>
+					</div>
+					<div class="ui red top attached segment">
+						<div class="ui padded vertical segment m-padded-tb-large">
+							<!--动态渲染部分-->
+							<div class="ui mobile reversed stackable grid" >
+									<div class="ui form" style="width: 100%; height: 100%;min-height:100px" >
+										<div class="required field">
+											<label><span class="ui header">标题:</span></label>
+											<input name="title" id="title" type="text"  maxlength="20">
+											 <div class="ui pointing label">
+												 启示标题（最多20个字符）。
+											 </div>
+										 </div>
+									    <div class="required field ">
+											<label><span class="ui header">内容:</span></label>
+											<textarea name="content" id="content"></textarea>
+											<div class="ui pointing label">
+												启示内容（最多500个字）。
+											</div>
+									    </div>
+										<div class="field" >
+											<div id="typeDiv">
+											<label><span class="ui header">分类:</span></label>
+											<script type="text/tmplate" id="typeTmp">
+												<select class="ui search dropdown" name="typeName" id="typeID">
+													<option value="">-请选择一个类别-</option>
+													{{#data}}
+													<option value="{{typeName}}">{{typeName}}</option>
+													{{/data}}
+												</select>
+											</script>
+											</div>
+											<div class="ui pointing label">
+												可以修改物品的分类。
+											</div>
+										</div>
+
+										<div class="required field ">
+											<label><span class="ui header">地点:</span></label>
+											<input name="address" id="address" type="email">
+											<div class="ui pointing label">
+												物品丢失/拾取地点。
+											</div>
+										</div>
+
+										<div class="actions">
+											<input onclick="editInfo()" type="button"  class="ui primary right floated m-margin-tb-large  button" value="修改">
+											<button type="reset"  class="ui gray right floated m-margin-tb-large  button" >重置</button>
+										</div>
+									</div>
+
+							</div>
+						</div>
+<!--						<div class="ui error message"></div>-->
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<!--修改成功后的模态框-->
+	<div class="ui basic modal" id="modelmsg">
+		<div class="ui icon header">
+			<i class="bell outline icon"></i>
+			你的启示信息已经修改成功。
+		</div>
+		<div class="actions">
+			<div class="ui green ok inverted button">
+				<i class="checkmark icon"></i>
+				确定
+			</div>
+		</div>
+	</div>
+    <!--	/*/<th:block th:replace="fragment::script">/*/-->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.2/dist/jquery.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+	<script src="https://cdn.bootcdn.net/ajax/libs/mustache.js/4.1.0/mustache.js"></script>
+	<script src="js/axios.js"></script>
+
+    <!--    /*/</th:block>/*/-->
+    <script>
+
+
+
+		function showtype(){
+			//发送请求
+			axios.post("http://127.0.0.1:8888/type/queryTypeList").then(function (response) {
+				console.log("调用成功");
+				console.log(response);
+				//创建type模板
+				var tem = document.getElementById("typeTmp").innerHTML;
+				var s = Mustache.render(tem,response);
+				document.getElementById("typeDiv").innerHTML = s;
+				console.log("调用成功111");
+			}).catch(function (error) {
+
+			})
+		}
+
+		//从url中获取传参的值 例如：userInfo.html?userId=45 就会将userId=45匹配出来
+		function getQueryString(name) {
+			var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+			var r = window.location.search.substr(1).match(reg);
+			if (r != null) return decodeURI(r[2]); return null;
+		}
+
+		var postId = getQueryString("postId");
+		var values = {};
+		values.postId = postId;
+
+		//数据回显
+		axios.post("http://127.0.0.1:8888/post/queryInfoById",values).then(function (res) {
+			//渲染个人信息，数据回显
+			var data = res.data.postInfo;
+			console.log(data);
+			document.getElementById("title").value = data.title;
+			document.getElementById("content").value = data.content;
+			document.getElementById("address").value = data.address;
+			console.log(res.data);
+			showtype();
+
+		}).catch(function (error) {
+
+		})
+
+
+		//编辑个人信息
+		function editInfo() {
+			//获取值信息
+			//并发送信息到后台
+			//后台新增数据后跳转到主页
+			var title = document.getElementById("title").value;
+			var content = document.getElementById("content").value;
+			var address = document.getElementById("address").value;
+			var typeName = document.getElementById("typeID").value;
+			console.log(typeName);
+			// debugger
+
+			var params = {};
+			if (title!=null||title!=""){
+				params.title = title;
+			}
+			if (content!=null||content!=""){
+				params.content = content;
+			}
+			if (address!=null||address!=""){
+				params.address = address;
+			}
+			if (typeName!=null||typeName!=""){
+				params.typeName = typeName;
+			}
+			params.postId = postId;
+			axios.post("http://127.0.0.1:8888/post/editInfo",params).then(function (res) {
+				$("#modelmsg").modal({
+					closable  : false,
+					onApprove : function() {
+						window.location.href="about.html";
+					}
+				}).modal('show');
+
+			}).catch(function (error) {
+				
+			})
+		}
+		
+    </script>
+
+</body>
+</html>

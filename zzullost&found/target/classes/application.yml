@@ -1,0 +1,39 @@
+server:
+  port: 8888
+  servlet:
+    context-path: /
+
+# 连接数据库相关信息
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+    url: jdbc:mysql://localhost:3306/swzl?characterEncoding=UTF-8&useUnicode=true&useSSL=true&serverTimezone=UTC
+    username: root
+    password: root
+
+  devtools: # 配置热部署
+    livereload:
+      enabled: true
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    # 这个是时区，一定要加，否则会默认为格林尼治时间，即少8小时
+    time-zone: GMT+8
+  mvc:
+    static-path-pattern: /images/** #访问的时候路径
+  resources:
+    static-locations: file:d://images/ #上传的路径
+
+# 配置mybatis
+# 配置 mybatis
+mybatis-plus:
+  type-aliases-package: com.yanzhen.model
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+  mapper-locations: classpath:mapper/*.xml
+
+
+
+

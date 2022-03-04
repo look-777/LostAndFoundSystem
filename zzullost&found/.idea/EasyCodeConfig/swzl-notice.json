@@ -1,0 +1,47 @@
+{
+  "name" : "Notice",
+  "preName" : "",
+  "comment" : null,
+  "templateGroupName" : "Default",
+  "fullColumn" : [ {
+    "name" : "id",
+    "comment" : null,
+    "type" : "java.lang.Integer",
+    "shortType" : null,
+    "custom" : false,
+    "ext" : { }
+  }, {
+    "name" : "cuser",
+    "comment" : null,
+    "type" : null,
+    "shortType" : null,
+    "custom" : false,
+    "ext" : { }
+  }, {
+    "name" : "content",
+    "comment" : null,
+    "type" : null,
+    "shortType" : null,
+    "custom" : false,
+    "ext" : { }
+  }, {
+    "name" : "ctime",
+    "comment" : null,
+    "type" : null,
+    "shortType" : null,
+    "custom" : false,
+    "ext" : { }
+  }, {
+    "name" : "title",
+    "comment" : null,
+    "type" : null,
+    "shortType" : null,
+    "custom" : false,
+    "ext" : { }
+  } ],
+  "pkColumn" : null,
+  "otherColumn" : null,
+  "savePackageName" : "com.zhanghk",
+  "savePath" : "./src/main/java/com/zhanghk",
+  "saveModelName" : "swzlsystem"
+}

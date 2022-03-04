@@ -1,0 +1,94 @@
+{
+  "homeInfo": {
+    "title": "首页",
+    "href": "page/adminindex.html?t=1"
+  },
+  "logoInfo": {
+    "title": "寻物小帮手",
+    "image": "images/zzulogo.png",
+    "href": ""
+  },
+  "menuInfo": [
+    {
+      "title": "后台管理",
+      "icon": "fa fa-address-book",
+      "href": "",
+      "target": "_self",
+      "child": [
+        {
+          "title": "数据一览",
+          "href": "",
+          "icon": "fa fa-pie-chart",
+          "target": "_self",
+          "child": [
+            {
+              "title": "用户数据",
+              "href": "page/charts/userInfo.html",
+              "icon": "fa fa-pie-chart",
+              "target": "_self"
+            },{
+              "title": "启示数据",
+              "href": "page/charts/postInfo.html",
+              "icon": "fa fa-pie-chart",
+              "target": "_self"
+            }
+          ]
+        },
+        {
+          "title": "类型管理",
+          "href": "page/type/index.html",
+          "icon": "fa fa-tags",
+          "target": "_self"
+        },
+        {
+          "title": "用户管理",
+          "href": "page/user/index.html",
+          "icon": "fa fa-user",
+          "target": "_self"
+        },
+        {
+          "title": "失物管理",
+          "href": "page/post/index.html",
+          "icon": "fa fa-briefcase",
+          "target": "_self"
+        },
+        {
+          "title": "反馈管理",
+          "href": "page/feedback/index.html",
+          "icon": "fa fa-phone",
+          "target": "_self"
+        },
+        {
+          "title": "公告管理",
+          "href": "page/notice/index.html",
+          "icon": "fa fa-calendar",
+          "target": "_self"
+        },
+        {
+          "title": "评论管理",
+          "href": "page/comment/index.html",
+          "icon": "fa fa-comment",
+          "target": "_self"
+        },
+        {
+          "title": "认领管理",
+          "href": "page/claim/index.html",
+          "icon": "fa fa-cogs",
+          "target": "_self"
+        },
+        {
+          "title": "邮件管理",
+          "href": "page/email/index.html",
+          "icon": "fa fa-envelope",
+          "target": "_self"
+        }
+      ]
+    },
+    {
+      "title": "交大寻物小帮手前台",
+      "href": "page/email/index.html",
+      "icon": "fa fa-envelope",
+      "target": "_self"
+    }
+  ]
+}

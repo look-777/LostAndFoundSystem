@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewpoint" content="width=device-width, initial-scale=1.0">
+    <title>寻物大厅</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+    <link rel="stylesheet" href="css/me1.css">
+    <script type="text/javascript" src="js/echarts.min.js"></script>
+</head>
+<body>
+<!--导航-->
+<nav class="ui  attached segment m-padded-tb-mini">
+    <div class="ui container">
+        <div class="ui tabular attached stackable menu">
+            <div class="ui container">
+                <div class="item">
+                    <img src="img/zzulogo.png" style="width: 60px;height: 60px">
+                    <h2 class="ui teal header item">寻物小帮手</h2>
+                </div>
+                <a class="item active" href="foundhall.html">
+                    <i class="search minus icon"></i>寻物大厅
+                </a>
+                <a class="item" href="losshall.html">
+                    <i class="globe icon"></i>失物大厅
+                </a>
+                <a class="item" href="showdata.html">
+                    <i class="chart bar outline icon"></i>数据观星
+                </a>
+                <a class="item" href="announce.html">
+                    <i class="edit icon"></i>我要发布
+                </a>
+                <a class="item" href="about.html">
+                    <i class="user icon"></i>个人中心
+                </a>
+
+
+                <div class="right item">
+                    <div class="ui simple dropdown item">
+                        <img class="ui avatar image" src="https://unsplash.it/100/100?image=1005">
+                        <i class="dropdown icon"></i>
+                        <div class="menu">
+                            <a class="teal item" target="_blank" href="mail.html"><i class="envelope outline icon"></i>收件箱
+                                <div class="ui red label"><span id="mailNum">1</span></div>
+                            </a>
+                            <a class="item" href="admin/index.html" id="adminsys" style="display: none"><i class="user circle icon"></i>进入管理系统</a>
+                            <a class="item" href="feedback.html"><i class="phone square icon"></i>反馈</a>
+                            <a class="item" href="login.html"><i class="sign-out icon"></i>退出</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</nav>
+<!--中间内容-->
+<div class="m-container m-padded-tb-big">
+    <div class="ui container">
+        <div class="ui stackable grid">
+            <div class="eleven wide column">
+                <div class="ui teal top attached segment">
+
+                    <div class="ui middle aligned two column grid">
+                        <div class="column">
+                            <h3 class="ui teal header">基于类别的筛选</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ui attached m-padded-tb-large segment" id="statusDiv">
+
+                </div>
+                <div class="ui top teal attached segment">
+                        <h3 class="ui teal header">基于特征的筛选</h3>
+                </div>
+                <div class="ui left aligned attached m-padded-tb-large segment" >
+                    <form class="ui left mini icon action input">
+                        <input id="searchTitle" name="searchInfo" type="text" placeholder="请输入标题 ＃">
+                        <input id="searchAddress" name="searchInfo" type="text" placeholder="请输入地点 ＃">
+                        <input id="searchContent" name="searchInfo" type="text" placeholder="请输入内容 ＃">
+                        <button type="reset"  class="ui gray button"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">重置</font></font></button>
+                        <a onclick="searchByTitle()" class="ui blue submit button"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;"><i class="search icon"></i></font></font></a>
+                    </form>
+                </div>
+                <div class="ui top attached teal segment">
+                    <div class="ui two column grid" id="foundMainDiv">
+
+                    </div>
+
+                </div>
+                <div class="ui bottom attached segment">
+                    <div class="ui pagination menu">
+                        <a class=" item">
+                            <i class="angle double left icon"></i>
+                        </a>
+                        <a class="item">
+                            <i class="angle double right icon"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="five wide column">
+                <!--可视化百度echart插件-->
+                <div class="ui segments">
+                    <div class="ui secondary segment">
+                        <div class="ui two column grid">
+                            <div class="column">
+                                <i class="chart bar icon"></i>历史数据
+                            </div>
+                        </div>
+                    </div>
+                    <div id="chartDiv" style="width: 100%;height: 100%;">
+                        <!--百度echart插件-->
+                    </div>
+                </div>
+                <!--最新评论-->
+                <div class="ui segments m-margin-top-large">
+                    <div class="ui secondary segment">
+                        <i class="comment icon"></i>最新评论
+                    </div>
+                    <div class="ui segment" id="commentDiv">
+                        <p><span>评论者：</span><a href="#">这是我的啊</a></p>
+                    </div>
+                </div>
+
+                <!--最新公告-->
+                <div class="ui segments m-margin-top-large">
+                    <div class="ui secondary segment">
+                        <i class="volume down icon"></i>最新公告&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span id="noticeTime"></span>
+                    </div>
+                    <h5 class="ui header center aligned" id="noticeTitle"></h5>
+                    <div class="ui segment" id="noticeDiv">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--头部-->
+    </div>
+</div>
+<!--认领物品的模态框-->
+<div class="ui basic modal" id="modelclaim">
+    <div class="ui icon header">
+        <i class="bell outline icon"></i>
+        确定要认领这个物品吗？
+    </div>
+    <div class="actions">
+        <div class="ui red basic cancel inverted button">
+            <i class="remove icon"></i>
+            否
+        </div>
+        <div class="ui green ok inverted  button">
+            <i class="checkmark icon"></i>
+            确定
+        </div>
+    </div>
+</div>
+<br>
+<br>
+
+<script src="js/jquery.min.js"></script>
+<script src="js/semantic.min.js"></script>
+<script src="js/axios.js"></script>
+<script src="admin/js/config.js"></script>
+
+<script>
+
+    document.getElementById("mailNum").innerHTML=localStorage.getItem("mailNum");
+
+        //默认调用
+        getPost();
+
+        //高级查询
+        function searchByTitle() {
+            var title = $("#searchTitle").val();
+            var address = $("#searchAddress").val();
+            var content = $("#searchContent").val();
+            getPost(null,null,null,title,address,content);
+        }
+
+
+        function getPost(flag,status,type,title,address,content){
+            values = {};
+            if(flag!=null){
+                values.flag = flag;
+                values.status  = status;
+            }
+            if(type!=null){
+                values.typeName = type;
+            }
+            if(title!=null){
+                values.title = title;
+            }
+            if(address!=null){
+                values.address = address;
+            }
+            if(content!=null){
+                values.content = content;
+            }
+
+
+            //发送请求
+            axios.post('http://127.0.0.1:8888/post/queryFoundList',values).then(function (response) {
+
+                var data = response.data;
+                console.log(data);
+
+                //渲染
+                var typeVolist = data.typeVoList;
+                var statusDiv = document.getElementById("statusDiv");
+                var statusContent =`<div class="ui labeled  button m-margin-tb-tiny">
+                    <div class="ui compact menu">
+                      <div class="item">
+                        <a href="javascript:void(0)" onclick="getPost()" ><i class="red icon tag"></i>全部</a>
+                      </div>
+                    </div>
+            </div>`;
+                //遍历列表
+                for(let type of typeVolist){
+                    statusContent+=`
+                    <div class="ui labeled  button m-margin-tb-tiny">
+                    <div class="ui compact menu">
+                      <div class="item">
+                        <a href="javascript:void(0)" onclick="getPost(null,null,'${type.typeName}')"><i class="teal icon tag"></i> ${type.typeName}</a>
+                        <div class="floating ui red label">${type.counts}</div>
+                      </div>
+                    </div>
+                </div>`;
+                }
+                statusDiv.innerHTML = statusContent;
+
+                //渲染失物招领帖子
+                var foundMainDiv = document.getElementById("foundMainDiv");
+                let foundMainContent = '';
+                //拿到后台返回前端的数据
+                var postlist = data.postlist;
+
+                //遍历polist
+                for(let obj of postlist){
+                    var org_content = obj.content;
+                    let content = org_content.substring(0,6) + "...";
+                    console.log(obj.picture);
+                    var postPic = SURL+obj.picture;
+                    foundMainContent+=`
+                    <div class="column">
+                    <div class="ui padded vertical segment m-padded-tb-large m-mobile-lr-clear">
+                    <div class="ui mobile reversed stackable grid">
+                    <div class="ui top attached segment">
+
+                            <div class="item">
+                                <div ${obj.flag==0 ?'' : 'style="display:none;"'}  class="ui violet label horizontal"><i class="search plus icon"></i>寻物</div>
+                            </div>
+                            <h3 class="ui header">${obj.title}<div ${obj.status==1  ?'' : 'style="display:none;"'}  class="ui green label horizontal">进行中</div>
+                                                    <div ${obj.status==0  ?'' : 'style="display:none;"'}  class="ui red label horizontal">已结束</div></h3>
+                            <p class="m-text">${content}</p>
+                             <div class="ui label">
+                                <i class="clock outline icon"></i>${obj.ctime}
+                                </div>
+                                <hr>
+                              <a href="#" target="_blank">
+                                <img src="${postPic}"  alt="" class="ui rounded image">
+                            </a>
+                        </div>
+
+                        <div class="ui bottom attached segment">
+                         <div class="extra">
+                                <div class="ui label">
+                                <i class="tags icon"></i>${obj.typeName}
+                                </div>
+                                <div class="ui label">
+                                <i class="paper plane icon"></i>${obj.address}
+                                </div>
+                            </div>
+
+                            <br>
+                            <div class="ui stackable grid">
+                                    <div class="ui mini horizontal link list">
+                                        <div class="item">
+                                            <img src="https://unsplash.it/100/100?image=1005" alt="" class="ui avatar image">
+                                            <div class="content"><a href="#" class="header">${obj.uname}</a></div>
+                                        </div>
+                                        <div class="item">
+                                            <i class="eye icon"></i>${obj.viewCount}
+                                        </div>
+                                        <div class="item">
+                                                    <i class="comment icon"></i>${obj.counts}
+                                        </div>
+                                        <div class="item">
+                                        <a href="detail.html?postId=${obj.id}" ><i class="hand teal point up icon"></i>详情</a>
+                                        <a ${obj.status==1 ?'' : 'style="display:none;"' } href="javascript:void(0)" onclick="Claim(${obj.id})"><i class="red bell outline icon"></i>认领</a>
+                                        </div>
+                                    </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+                </div>`;
+                }
+                foundMainDiv.innerHTML = foundMainContent;
+                //渲染最新公告
+                var noticeDiv = document.getElementById("noticeDiv");
+                var noticeTitleDiv = document.getElementById("noticeTitle");
+                var noticeTimeDiv = document.getElementById("noticeTime");
+                var noticeTitle = data.newNotice.title;
+                var noticeContent = data.newNotice.content;
+                var noticeTime = data.newNotice.ctime;
+                noticeTitleDiv.innerHTML = noticeTitle;
+                noticeDiv.innerHTML = noticeContent;
+                noticeTimeDiv.innerHTML = noticeTime;
+                //渲染最新评论
+                var commentList = data.comments;
+                console.log(commentList);
+                var commentcontent = '';
+                for(let obj of commentList){
+                    commentcontent+= `<p><span>${obj.uname}: </span><a href="detail.html?postId=${obj.postId}">${obj.content}</a></p>`;
+                }
+                document.getElementById("commentDiv").innerHTML = commentcontent;
+
+                //渲染统计图
+                var myChart = echarts.init(document.getElementById("chartDiv"));
+                //console.log(myChart);
+                //统计图的配置项和数据
+                myChart.setOption({
+                    tooltip: {},
+                    series: [{
+                        radius: 35,
+                        type: 'pie',
+                        data: [{name: '已经找到',value: data.wxwqs},
+                            {name: '暂未找到',value: data.xuqs},
+                            {name: '等待认领',value: data.wswzl},
+                            {name: '已经认领',value: data.swzl}]
+                    }]
+                });
+
+                var userType = localStorage.getItem("type");
+                if (userType=="1"){
+                    $("#adminsys").show();
+                }
+
+                }).catch(function (error){})
+
+    }
+        //认领按钮触发函数
+        function Claim(postId) {
+            var params = {}
+            params.postId = postId;
+
+            $("#modelclaim").modal({
+                closable  : false,
+                onDeny    : function(){
+
+                },
+                onApprove : function() {
+                    axios.post("http://127.0.0.1:8888/post/claim",params).then(function (res) {
+                        window.location.href="foundhall.html";
+
+                    }).catch(function (error) {
+
+                    })
+
+                }
+            }).modal('show')
+            ;
+        }
+</script>
+</body>
+</html>

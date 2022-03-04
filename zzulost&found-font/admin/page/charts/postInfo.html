@@ -1,0 +1,274 @@
+<style>
+    .top-panel {border:1px solid #eceff9;border-radius:5px;text-align:center;}
+    .top-panel > .layui-card-body {height:60px;}
+    .top-panel-number {line-height:60px;font-size:30px;border-right:1px solid #eceff9;}
+    .top-panel-tips {line-height:30px;font-size:12px}
+</style>
+<div class="layuimini-container layuimini-page-anim">
+    <div class="layuimini-main welcome">
+        <div class="layui-row layui-col-space15">
+            <div class="layui-col-xs12 layui-col-md8">
+                <div id="echarts-dataset" style="background-color:#ffffff;min-height:300px;padding: 10px"></div>
+            </div>
+
+            <div class="layui-col-xs12 layui-col-md4">
+                <div id="echarts-pies" style="background-color:#ffffff;min-height:400px;padding: 10px"></div>
+            </div>
+        </div>
+
+        <div class="layui-row layui-col-space15">
+            <div class="layui-col-xs12 layui-col-md4">
+                <div id="lossfound" style="background-color:#ffffff;min-height:400px;padding: 10px"></div>
+            </div>
+            <div class="layui-col-xs12 layui-col-md8">
+                <div id="echarts-records" style="background-color:#ffffff;min-height:400px;padding: 10px"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    layui.use(['layer','echarts'], function () {
+        var $ = layui.jquery,
+            echarts = layui.echarts;
+
+        //执行操作---axios发送请求
+        $.post("http://127.0.0.1:8888/admindata/postInfo",{},(function (response) {
+            //debugger
+            console.log(response);
+
+            /**
+             * 报表功能
+             */
+            var echartsRecords = echarts.init(document.getElementById('echarts-records'), 'walden');
+
+            var optionRecords = {
+                title: {
+                    text: '月统计图',
+                    left: 'center'
+                },
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {
+                        type: 'cross',
+                        label: {
+                            backgroundColor: '#6a7985'
+                        }
+                    }
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    containLabel: true
+                },
+                xAxis: [
+                    {
+                        type: 'category',
+                        boundaryGap: false,
+                        data: [ '1月', '2月', '3月', '4月', '5月', '6月']
+                    }
+                ],
+                yAxis: [
+                    {
+                        type: 'value'
+                    }
+                ],
+                series: [
+                    {
+                        name: '启示数量',
+                        type: 'line',
+                        stack: '总量',
+                        areaStyle: {},
+                        data: [
+                            response.post_01,
+                            response.post_02,
+                            response.post_03,
+                            response.post_04,
+                            response.post_05,
+                            response.post_06]
+                    }
+                ]
+            };
+            echartsRecords.setOption(optionRecords);
+
+
+            /**
+             * 玫瑰图表
+             */
+            var echartsPies = echarts.init(document.getElementById('echarts-pies'), 'walden');
+            var optionPies = {
+                title: {
+                    text: '状态一览',
+                    left: 'center'
+                },
+                tooltip: {
+                    trigger: 'item',
+                    formatter: '{a} <br/>{b} : {c} ({d}%)'
+                },
+                series: [
+                    {
+                        name: "",
+                        type: 'pie',
+                        radius: '55%',
+                        center: ['50%', '60%'],
+                        roseType: 'radius',
+                        data: [
+                            {value: response.xuqs, name: '已经找到'},
+                            {value: response.wxwqs, name: '暂未找到'},
+                            {value: response.swzl, name: '已经认领'},
+                            {value: response.wswzl, name: '暂未认领'}
+                        ],
+                        emphasis: {
+                            itemStyle: {
+                                shadowBlur: 10,
+                                shadowOffsetX: 0,
+                                shadowColor: 'rgba(0, 0, 0, 0.5)'
+                            }
+                        }
+                    }
+                ]
+            };
+            echartsPies.setOption(optionPies);
+
+
+            /**
+             * 柱状图
+             */
+            var echartsDataset = echarts.init(document.getElementById('echarts-dataset'), 'walden');
+
+            var optionDataset = {
+                title: {
+                    text: '类别数据',
+                    left: 'center'
+                },
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {
+                        type: 'cross',
+                        crossStyle: {
+                            color: '#999'
+                        }
+                    }
+                },
+                toolbox: {
+                    feature: {
+                        dataView: {show: true, readOnly: false},
+                        magicType: {show: true, type: ['line', 'bar']},
+                        restore: {show: true},
+                        saveAsImage: {show: true}
+                    }
+                },
+                xAxis: [
+                    {
+                        type: 'category',
+                        data: response.nameList,
+                        axisPointer: {
+                            type: 'shadow'
+                        }
+                    }
+                ],
+                yAxis: [
+                    {
+                        type: 'value',
+                        name: '数量',
+                        min: 0,
+                        max: 15,
+                        interval: 5,
+                        axisLabel: {
+                            formatter: '{value} 个'
+                        }
+                    },
+                    {
+                        type: 'value',
+                        name: '数量',
+                        min: 0,
+                        max: 15,
+                        interval: 5,
+                        axisLabel: {
+                            formatter: '{value} 个'
+                        }
+                    }
+                ],
+                series: [
+                    {
+                        name: '数量',
+                        type: 'bar',
+                        data: response.countList
+                    },
+                    {
+                        name: '数量',
+                        type: 'line',
+                        yAxisIndex: 1,
+                        data: response.countList
+                    }
+                ]
+            };
+
+            echartsDataset.setOption(optionDataset);
+
+            /**
+             * 失去的VS找回的
+             */
+            var myechart = echarts.init(document.getElementById("lossfound"),'walden') ;
+            var options = {
+                title: {
+                    text: '丢失VS找回',
+                    left: 'center'
+                },
+                tooltip: {
+                    trigger: 'item'
+                },
+                legend: {
+                    orient: 'vertical',
+                    left: 'left',
+                },
+                series: [
+                    {
+                        type: 'pie',
+                        radius: '50%',
+                        itemStyle: {
+
+                            borderRadius: 10,
+                            borderColor: '#ffffff',
+                            borderWidth: 2,
+
+                            normal: {
+                                //每个柱子的颜色即为colorList数组里的每一项，如果柱子数目多于colorList的长度，则柱子颜色循环使用该数组
+                                color: function (params) {
+                                    var colorList = [ 'rgb(255,106,106)', 'rgb(195,229,235)', 'rgb(216,191,216)','rgb(205,149,12)'];
+                                    return colorList[params.dataIndex];
+                                }
+                            }
+
+                        },
+                        data: [
+                            {value: response.loss, name: '丢失'},
+                            {value: response.found, name: '找回'}
+                        ],
+                        emphasis: {
+                            itemStyle: {
+                                shadowBlur: 10,
+                                shadowOffsetX: 0,
+                                shadowColor: 'rgba(0, 0, 0, 0.5)'
+                            }
+                        }
+                    }
+                ]
+            };
+            myechart.setOption(options);
+
+
+
+            // echarts 窗口缩放自适应
+            window.onresize = function () {
+                echartsRecords.resize();
+            }
+
+        }));
+
+
+
+
+
+    });
+</script>

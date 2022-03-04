@@ -1,0 +1,102 @@
+<div class="layuimini-main"  id="query">
+    <script type="text/html" id="demo">
+
+        <ul class="layui-timeline">
+            <li class="layui-timeline-item">
+                <i class="layui-icon layui-timeline-axis">&#xe63f;</i>
+                <div class="layui-timeline-content layui-text">
+                    <h3 class="layui-timeline-title"><i class="fa fa-suitcase"></i>&nbsp;寻物|失物</h3>
+                    <p>
+                        {{# if(d.flag==0){ }}
+                        寻物
+                        {{# } else { }}
+                        失物
+                        {{# }}}
+                    </p>
+                </div>
+            </li>
+            <li class="layui-timeline-item">
+                <i class="layui-icon layui-timeline-axis">&#xe63f;</i>
+                <div class="layui-timeline-content layui-text">
+                    <h3 class="layui-timeline-title"><i class="fa fa-newspaper-o"></i>&nbsp;标题</h3>
+                    <p>
+                        {{d.title}}
+                    </p>
+
+                </div>
+            </li>
+            <li class="layui-timeline-item">
+                <i class="layui-icon layui-timeline-axis">&#xe63f;</i>
+                <div class="layui-timeline-content layui-text">
+                    <h3 class="layui-timeline-title"><i class="fa fa-tags"></i>&nbsp;分类</h3>
+                    <p>
+                        {{d.typeName}}
+                    </p>
+                </div>
+            </li>
+            <li class="layui-timeline-item">
+                <i class="layui-icon layui-timeline-axis">&#xe63f;</i>
+                <div class="layui-timeline-content layui-text">
+                    <h3 class="layui-timeline-title"><i class="fa fa-location-arrow"></i>&nbsp;地址</h3>
+                    <p>
+                        {{d.address}}
+                    </p>
+                </div>
+            </li>
+            <li class="layui-timeline-item">
+                <i class="layui-icon layui-timeline-axis">&#xe63f;</i>
+                <div class="layui-timeline-content layui-text">
+                    <h3 class="layui-timeline-title"><i class="fa fa-comment-o"></i>&nbsp;发布内容</h3>
+                    <p>
+                        {{d.content}}
+                    </p>
+                </div>
+            </li>
+            <li class="layui-timeline-item">
+                <i class="layui-icon layui-timeline-axis">&#xe63f;</i>
+                <div class="layui-timeline-content layui-text">
+                    <h3 class="layui-timeline-title"><i class="fa fa-user"></i>&nbsp;发帖人</h3>
+                    <p>
+                        {{d.uname}}
+                    </p>
+                </div>
+            </li>
+            <li class="layui-timeline-item">
+                <i class="layui-icon layui-timeline-axis">&#xe63f;</i>
+                <div class="layui-timeline-content layui-text">
+                    <h3 class="layui-timeline-title"><i class="fa fa-calendar"></i>&nbsp;发帖时间</h3>
+                    <p>
+                        {{d.ctime}}
+                    </p>
+                </div>
+            </li>
+            <li class="layui-timeline-item">
+            <i class="layui-icon layui-timeline-axis">&#xe63f;</i>
+            <div class="layui-timeline-content layui-text">
+                <h3 class="layui-timeline-title"><i class="fa fa-line-chart"></i>&nbsp;状态</h3>
+                <p>
+                    {{# if(d.status ==0){ }}
+                    已结束
+                    {{# } else { }}
+                    进行中
+                    {{# }}}
+                </p>
+            </div>
+            </li>
+            <li class="layui-timeline-item">
+                <i class="layui-icon layui-timeline-axis">&#xe63f;</i>
+                <div class="layui-timeline-content layui-text">
+                    <h3 class="layui-timeline-title"><i class="fa fa-eye"></i>&nbsp;浏览次数</h3>
+                    <p>
+                        {{d.viewCount}}
+                    </p>
+                </div>
+            </li>
+
+        </ul>
+
+    </script>
+
+
+
+</div>

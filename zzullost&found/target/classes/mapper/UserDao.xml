@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhanghk.dao.UserDao">
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" parameterType="string" resultType="com.zhanghk.entity.User">
+        select
+        id, type , username,sex , age ,email ,  personal_say, last_time
+        from tb_user
+        <where>
+
+            <if test="username != null and username != ''">
+                and username like '%${username}%'
+            </if>
+
+            <if test="type != null">
+                and type = #{type}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert"  parameterType="com.zhanghk.entity.User">
+        insert into tb_user(tb_user.admin,tb_user.username,tb_user.password,tb_user.email,tb_user.sex,tb_user.age,tb_user.photo,tb_user.reward_code,tb_user.personal_say,tb_user.last_time,tb_user.type)  values(#{admin},#{username},#{password},#{email},#{sex},#{age},#{photo},#{rewardCode},#{personalSay},now(),#{type})
+    </insert>
+
+    <!--查询单个-->
+    <select id="queryById" resultType="com.zhanghk.entity.User">
+        select
+          a.id, a.admin, a.username, a.password, a.email, a.sex, a.age, a.photo, a.reward_code, a.personal_say, a.last_time, a.type
+        from tb_user as a
+        where id = #{a.id}
+    </select>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update tb_user
+        <set>
+            <if test="admin != null and admin != ''">
+                tb_user.admin = #{admin},
+            </if>
+            <if test="username != null and username != ''">
+                username = #{username},
+            </if>
+            <if test="password != null and password != ''">
+                password = #{password},
+            </if>
+            <if test="email != null and email != ''">
+                email = #{email},
+            </if>
+            <if test="sex != null and sex != ''">
+                sex = #{sex},
+            </if>
+            <if test="age != null">
+                age = #{age},
+            </if>
+            <if test="photo != null and photo != ''">
+                photo = #{photo},
+            </if>
+            <if test="rewardCode != null and rewardCode != ''">
+                reward_code = #{rewardCode},
+            </if>
+            <if test="personalSay != null and personalSay != ''">
+                personal_say = #{personalSay},
+            </if>
+            <if test="lastTime != null">
+                last_time = #{lastTime},
+            </if>
+            <if test="type != null">
+                type = #{type},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from tb_user where id = #{id}
+    </delete>
+
+    <select id="getUserNum" resultType="int">
+        select count(id) from tb_user
+    </select>
+
+    <!--统计性别人数-->
+    <select id="getMaleNum" resultType="int">
+        SELECT COUNT(id) FROM tb_user WHERE sex="男"
+    </select>
+
+    <!--统计管理员人数-->
+    <select id="getAdminNum" resultType="int">
+        SELECT COUNT(id) FROM tb_user WHERE tb_user.admin="true"
+    </select>
+
+    <!--根据用户名找用户-->
+    <select id="findUserByName" parameterType="string" resultType="com.zhanghk.entity.User">
+        select * from tb_user where username=#{username}
+    </select>
+
+</mapper>

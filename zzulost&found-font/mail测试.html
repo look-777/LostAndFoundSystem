@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="UTF-8">
+        <meta name="viewpoint" content="width=device-width, initial-scale=1.0">
+        <title>我的收件箱</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+        <link rel="stylesheet" href="css/me1.css">
+        <link rel="stylesheet" type="text/css" href="css/jsCalendar.css">
+</head>
+<body>
+<!--中间内容-->
+<div class="m-container m-padded-tb-big">
+    <div class="ui container">
+        <div class="ui stackable grid">
+            <div class="sixteen wide column">
+                <div class="ui top segment">
+                    <div class="ui red header"><span id="mailnum">4</span>条邮件</div>
+                </div>
+                <div class="ui top attached top segment">
+                    <div class="ui middle aligned divided list" id="mailDiv">
+                        <div class="item">
+                            <div class="right floated content">
+                                <a onclick="deleteMail()" class="ui button">删除</a>
+                            </div>
+                            <img class="ui avatar image" src="https://unsplash.it/100/100?image=1005">
+                            <div class="content">
+                                <a class="header">主题</a>
+                                <i class="clock outline icon"></i>2020-04-16 19:24:00
+                                <div class="description">
+                                    邮件内容。
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<!--邮件删除提示的模态框-->
+<div class="ui basic modal" id="modeldelete">
+    <div class="ui icon header">
+        <i class="bell outline icon"></i>
+        你确定要删除该邮件吗？
+    </div>
+    <div class="actions">
+        <div class="ui red basic cancel inverted button">
+            <i class="remove icon"></i>
+            取消
+        </div>
+        <div class="ui green ok inverted button">
+            <i class="checkmark icon"></i>
+            确定
+        </div>
+    </div>
+</div>
+<br>
+<br>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.2/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+<script src="js/axios.js"></script>
+<script>
+
+
+    var userType = localStorage.getItem("type");
+    if (userType=="1"){
+        $("#adminsys").show();
+    }
+    //发送请求
+    axios.post("http://127.0.0.1:8888/mail/userMail",{}).then(function (response) {
+        console.log(response.data);
+
+        var mailList = response.data.mymail;
+        document.getElementById("mail_Num").innerHTML=mailList.length;
+        localStorage.setItem("mailNum",mailList.length);
+        var mailDiv = document.getElementById("mailDiv");
+        let mailInfo="";
+        for (let mail of mailList){
+            mailInfo+=`<div class="item">
+                            <div class="right floated content">
+                                <a onclick="deleteMail(${mail.id})" class="ui button">删除</a>
+                            </div>
+                            <img class="ui avatar image" src="https://unsplash.it/100/100?image=1005">
+                            <div class="content">
+                                <a class="header">${mail.title}</a>
+                                <i class="clock outline icon"></i>${mail.ctime}
+                                <div class="description">
+                                    ${mail.content}
+                                </div>
+                            </div>
+                        </div>`;
+        }
+        mailDiv.innerHTML = mailInfo;
+
+        document.getElementById("mailnum").innerHTML = mailList.length;
+    });
+
+    function deleteMail(mailId) {
+        var params = {}
+        params.mailId = mailId;
+        $("#modeldelete").modal({
+            closable  : false,
+            onDeny: function(){
+                window.location.href="mail测试.html";
+            },
+            onApprove : function() {
+                axios.post("http://127.0.0.1:8888/mail/deleteMailById",params).then(function (res) {
+                    window.location.href="mail测试.html";
+                }).catch(function (error) {
+                })
+            }
+        }).modal('show');
+    }
+
+</script>
+</body>
+</html>

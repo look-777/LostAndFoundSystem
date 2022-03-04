@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhanghk.dao.TypeMapper">
+    <select id="queryList" parameterType="string" resultType="com.zhanghk.entity.Type">
+        select id,type_name from type
+        <where>
+            <if test="typeName!=null and typeName!=''">
+                and type_name like '%${typeName}%'
+            </if>
+        </where>
+        order by id desc
+    </select>
+
+    <insert id="insertType" parameterType="com.zhanghk.entity.Type">
+        insert into type(type_name)values(#{typeName})
+    </insert>
+
+    <delete id="deleteTypeByID" parameterType="int">
+        delete from type where id=#{id}
+    </delete>
+
+    <!--根据类型 统计数量-->
+    <select id="getCountsByType" resultType="com.zhanghk.vo.TypeVo">
+        select type_name,count(id) as counts from post group by type_name
+    </select>
+
+    <!--根据flag统计数量 即统计失物下的分类数量和寻物下的分类数量-->
+    <select id="getCountsByFlag" resultType="com.zhanghk.vo.TypeVo" parameterType="int">
+        select type_name,count(id) as counts from post where flag=#{flag} group by type_name
+    </select>
+
+
+</mapper>

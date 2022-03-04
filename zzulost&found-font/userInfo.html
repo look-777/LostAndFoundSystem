@@ -1,0 +1,165 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人信息编辑</title>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+    <link rel="stylesheet" href="css/me1.css" >
+</head>
+<body>
+	<!-- 中间内容 -->
+	<div class="m-container-small m-padded-tb-large">
+		<div class="ui container" style="width: 85%;height: auto">
+			<div class="ui stackable grid">
+				<div class="sixteen wide column">
+					<div class="ui top segment ">
+						<div class="column">
+							<h3 class="ui teal header"><i class="address card outline icon"></i> 个人信息编辑</h3>
+						</div>
+					</div>
+					<div class="ui red top attached segment">
+						<div class="ui padded vertical segment m-padded-tb-large">
+							<!--动态渲染部分-->
+							<div class="ui mobile reversed stackable grid" >
+									<div class="ui form" style="width: 100%; height: 100%;min-height:100px" >
+										<div class="required field">
+											<label><span class="ui header">用户名:</span></label>
+											<input name="username" id="username" type="text"   maxlength="20">
+											 <div class="ui pointing label">
+												 用户名作系统登录的凭证(最多20字符)。
+											 </div>
+										 </div>
+									    <div class="required field ">
+											<label><span class="ui header">邮箱:</span></label>
+											<input name="mail" id="mail" type="email">
+											<div class="ui pointing label">
+												请正确输入你的邮箱，以用于发送邮件。
+											</div>
+									    </div>
+										<div class="required field ">
+											<label><span class="ui header">个性签名:</span></label>
+											<input name="personSay" id="personalSay" type="email">
+											<div class="ui pointing label">
+												请写一句话作为你的个性签名吧！
+											</div>
+										</div>
+										<div class="field">
+											<label><span class="ui header">性别:</span></label>
+											<div class="ui action input">
+												<select class="ui compact selection dropdown" id="sex">
+													<option value="1"><small>男</small></option>
+													<option value="0"><small>女</small></option>
+												</select>
+											</div>
+										</div>
+										<div class=" field ">
+											<label><span class="ui header">年龄:</span></label>
+											<input name="personSay" id="age" type="email"   maxlength="20">
+										</div>
+										<div class="actions">
+											<input onclick="editInfo()" type="button"  class="ui primary right floated m-margin-tb-large  button" value="提交">
+											<button type="reset"  class="ui gray right floated m-margin-tb-large  button" >重置</button>
+										</div>
+									</div>
+
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<!--修改成功后的模态框-->
+	<div class="ui basic modal" id="modelmsg">
+		<div class="ui icon header">
+			<i class="bell outline icon"></i>
+			你的个人信息已经修改成功。
+		</div>
+		<div class="actions">
+			<div class="ui green ok inverted button">
+				<i class="checkmark icon"></i>
+				确定
+			</div>
+		</div>
+	</div>
+    <!--	/*/<th:block th:replace="fragment::script">/*/-->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.2/dist/jquery.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+	<script src="js/axios.js"></script>
+
+    <!--    /*/</th:block>/*/-->
+    <script>
+
+
+		//从url中获取传参的值 例如：userInfo.html?userId=45 就会将userId=45匹配出来
+		function getQueryString(name) {
+			var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+			var r = window.location.search.substr(1).match(reg);
+			if (r != null) return decodeURI(r[2]); return null;
+		}
+
+		var userId = getQueryString("userId");
+		var values = {};
+		values.userId = userId;
+
+		axios.post("http://127.0.0.1:8888/user/queryInfoById",values).then(function (res) {
+			//渲染个人信息，数据回显
+			var data = res.data.myInfo;
+			document.getElementById("username").value = data.username;
+			document.getElementById("mail").value = data.email;
+			document.getElementById("age").value = data.age;
+			document.getElementById("personalSay").value = data.personalSay;
+			if (data.sex=="0"){
+				document.getElementById("sex").value = 0;
+			}else {
+				document.getElementById("sex").value = 1;
+			}
+
+		}).catch(function (error) {
+
+		})
+
+
+		//编辑个人信息
+		function editInfo() {
+			//获取值信息
+			//并发送信息到后台
+			//后台新增数据后跳转到主页
+			var username = document.getElementById("username").value;
+			var mail = document.getElementById("mail").value;
+			var personalSay = document.getElementById("personalSay").value;
+			var gender = document.getElementById("sex").value;
+			var age = document.getElementById("age").value;
+			var sex = gender=="1" ? "男" :" 女";
+			console.log(sex);
+			
+			var params = {};
+			params.userId = userId;
+			params.username = username;
+			params.mail = mail;
+			params.personalSay = personalSay;
+			params.sex = sex;
+			params.age = age;
+			axios.post("http://127.0.0.1:8888/user/editInfo",params).then(function (res) {
+				$("#modelmsg").modal({
+					closable  : false,
+					onApprove : function() {
+						window.location.href="about.html";
+					}
+				}).modal('show');
+
+			}).catch(function (error) {
+				
+			})
+
+
+		}
+
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,239 @@
+<div class="layuimini-container layuimini-page-anim">
+    <div class="layuimini-main">
+
+        <fieldset class="table-search-fieldset">
+            <legend>公告高级检索</legend>
+            <div style="margin: 10px 10px 10px 10px">
+                <form class="layui-form layui-form-pane" action="">
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">公告标题</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="title" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                          <!--下拉框-->
+                            <label class="layui-form-label">公告内容</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="content" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <!--下拉框-->
+                            <label class="layui-form-label">创建者</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="cuser" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <button type="submit" class="layui-btn layui-btn-primary"  lay-submit lay-filter="data-search-btn"><i class="layui-icon"></i> </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </fieldset>
+
+        <script type="text/html" id="toolbarDemo">
+            <div class="layui-btn-container">
+                <button class="layui-btn layui-btn-normal layui-btn-sm data-add-btn" lay-event="add"> <i class="fa fa-plus"></i> </button>
+                <button class="layui-btn layui-btn-sm layui-btn-danger data-delete-btn" lay-event="delete">  <i class="fa fa-trash-o"></i></button>
+            </div>
+        </script>
+
+        <table class="layui-hide" id="currentTableId" lay-filter="currentTableFilter"></table>
+
+        <script type="text/html" id="currentTableBar">
+            <div class="layui-inline">
+
+                <a class="layui-btn layui-btn-normal layui-btn-xs data-count-edit" lay-event="query"><i class="fa fa-eye"></i></a>
+            </div>
+            <div class="layui-inline">
+
+                <a class="layui-btn layui-btn-xs layui-btn-danger data-count-delete " lay-event="delete"><i class="fa fa-trash-o"></i></a>
+            </div>
+
+
+        </script>
+
+    </div>
+</div>
+
+<script>
+    layui.use(['form', 'table','miniPage','element','axios','laytpl'], function () {
+        var $ = layui.jquery,
+            form = layui.form,
+            table = layui.table,
+            axios=layui.axios,
+            laytpl=layui.laytpl,
+            miniPage = layui.miniPage;
+
+
+        //重新渲染，避免出现下拉框渲染不出的效果。
+        form.render();
+
+        table.render({
+            elem: '#currentTableId',
+            url: 'http://localhost:8888/notice/queryAll',
+            toolbar: '#toolbarDemo',
+            defaultToolbar: ['filter', 'exports', 'print', {
+                title: '提示',
+                layEvent: 'LAYTABLE_TIPS',
+                icon: 'layui-icon-tips'
+            }],
+            cols: [[
+                {type: "checkbox", width: 50},
+                {field: 'title', width: 150, title: '标题'},
+                {field: 'content', width: 250, title: '内容'},
+                {field: 'cuser', width: 100, title: '发布者'},
+                {field: 'ctime', width: 180, title: '发布时间'},
+                {title: '操作', minWidth: 150, toolbar: '#currentTableBar', align: "center"}
+            ]],
+            limits: [10, 15, 20, 25, 50, 100],
+            limit: 15,
+            page: true,
+            skin: 'line'
+        });
+
+        // 监听搜索操作
+        form.on('submit(data-search-btn)', function (data) {
+            var content=data.field.content;
+            var title=data.field.title;
+            //执行搜索重载
+            table.reload('currentTableId', {
+                page: {
+                    curr: 1
+                }
+                , where: {
+                    content: content,
+                    title: title
+                }
+            }, 'data');
+
+            return false;
+        });
+
+        //前台输入数据，后台添加后，刷新页面会整体，但这里只让table刷新
+        window.reload = function () {
+            table.reload("currentTableId")
+        }
+
+
+        /**
+         * toolbar事件监听
+         */
+        table.on('toolbar(currentTableFilter)', function (obj) {
+            if (obj.event === 'add') {   // 监听添加公告操作
+                var content = miniPage.getHrefContent('page/notice/add.html');
+                //var openWH = miniPage.getOpenWidthHeight();
+
+                var index = layer.open({
+                    title: '添加公告',
+                    type: 1,
+                    shade: 0.2,
+                    maxmin:true,
+                    shadeClose: true,
+                    area: ['60%','60%'],
+                   // offset: [openWH[2] + 'px', openWH[3] + 'px'],
+                    content: content,
+                });
+                $(window).on("resize", function () {
+                    layer.full(index);
+                });
+            } else if (obj.event === 'delete') {  // 监听批量删除操作
+                var data = table.checkStatus('currentTableId').data;
+                if(data.length==0){
+                    layer.msg("请选择要删除的反馈记录");
+                }else{
+                    //获取要删除记录的id集合
+                    var ids=getCheckId(data);
+                    axios.get('http://127.0.0.1:8888/notice/deleteByIds?ids='+ids).then(function (response){
+                        if(response.code==200){
+                            layer.msg("删除成功");
+                            // 刷新主页面 table一块
+                            window.reload();
+                        }
+                        //关闭弹出信息
+                        // layer.close(parentIndex);
+                    }).catch(function (error){
+                        layer.msg(data.msg);
+                    })
+                }
+            }
+        });
+
+
+        /**
+         * 获取删除id的集合
+         */
+        function getCheckId(data){
+            var arr=new Array();
+            for(var i=0;i<data.length;i++){
+                arr.push(data[i].id);
+            }
+            return arr.join(",");
+        }
+
+        //监听表格复选框选择
+        table.on('checkbox(currentTableFilter)', function (obj) {
+            console.log(obj)
+        });
+
+
+        /**
+         * 设置form信息
+         */
+        function setFormValue(data){
+            form.val("updatePwd",{
+                id:data.id
+            })
+        }
+
+        table.on('tool(currentTableFilter)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'query') {   // 监听查看详情操作
+                var content = miniPage.getHrefContent('page/notice/queryInfo.html');
+                var openWH = miniPage.getOpenWidthHeight();
+
+                var index = layer.open({
+                    title: '公告详情',
+                    type: 1,
+                    shade: 0.2,
+                    maxmin:true,
+                    shadeClose: true,
+                    area: ["40%", "60%"],
+                    // offset: [openWH[2] + 'px', openWH[3] + 'px'],
+                    content: content,
+                });
+                //渲染值信息 给id输入框设置值
+                //demo表示JavaScript的id
+                var getTpl = demo.innerHTML
+                    ,view = document.getElementById('query');
+                laytpl(getTpl).render(data, function(html){
+                    view.innerHTML = html;
+                });
+
+
+                $(window).on("resize", function () {
+                    layer.full(index);
+                });
+            } else if (obj.event === 'delete') { //监听单个删除功能
+                layer.confirm('真的删除行么', function (index) {
+                    axios.get('http://localhost:8888/notice/deleteByIds?ids='+data.id).then(function (response){
+                        if(response.code==200){
+                            layer.msg("删除成功");
+                            // 刷新主页面 table一块
+                            window.reload();
+                        }
+                        //关闭弹出信息
+                        // layer.close(parentIndex);
+                    }).catch(function (error){
+                        layer.msg(data.msg);
+                    })
+                    layer.close(index);
+                });
+            }
+        });
+
+    });
+</script>

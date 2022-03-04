@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="UTF-8">
+        <meta name="viewpoint" content="width=device-width, initial-scale=1.0">
+        <title>个人中心</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+        <link rel="stylesheet" href="css/me1.css">
+        <link rel="stylesheet" type="text/css" href="css/jsCalendar.css">
+</head>
+<body>
+<!--导航-->
+<nav class="ui  attached segment m-padded-tb-mini">
+    <div class="ui container">
+        <div class="ui tabular attached stackable menu">
+            <div class="ui container">
+                <div class="item">
+                    <img src="img/zzulogo.png" style="width: 60px;height: 60px">
+                    <h2 class="ui teal header item">寻物小帮手</h2>
+                </div>
+                <a class="item" href="foundhall.html">
+                    <i class="search minus icon"></i>寻物大厅
+                </a>
+                <a class="item" href="losshall.html">
+                    <i class="globe icon"></i>失物大厅
+                </a>
+                <a class="item" href="showdata.html">
+                    <i class="chart bar outline icon"></i>数据观星
+                </a>
+                <a class="item" href="announce.html">
+                    <i class="edit icon"></i>我要发布
+                </a>
+                <a class="active item" href="about.html">
+                    <i class="user icon"></i>个人中心
+                </a>
+
+                <div class="right item">
+                    <div class="ui simple dropdown item">
+                        <img class="ui avatar image" src="https://unsplash.it/100/100?image=1005">
+                        <i class="dropdown icon"></i>
+                        <div class="menu">
+                            <a class="teal item" target="_blank" href="mail.html"><i class="envelope outline icon"></i>收件箱
+                                <div class="ui red label"><span id="mailNum">1</span></div>
+                            </a>
+                            <a class="item" href="/swzlweb/admin/index.html" id="adminsys" style="display: none"><i class="user circle icon"></i>进入管理系统</a>
+                            <a class="item" href="feedback.html"><i class="phone square icon"></i>反馈</a>
+                            <a class="item" href="login.html"><i class="sign-out icon"></i>退出</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+<!--中间内容-->
+<div class="m-container m-padded-tb-big">
+    <div class="ui container">
+        <div class="ui stackable grid">
+            <div class="five wide column" >
+                <div class="ui segments" id="userInfoDiv">
+
+                </div>
+                <!--日历插件-->
+                <div class="ui segments">
+                    <div class="ui secondary segment">
+                        <div class="ui two column grid">
+                            <div class="column">
+                                <i class="calendar icon"></i>我的日程
+                            </div>
+                        </div>
+                    </div>
+                    <div class="auto-jsCalendar classic-theme" data-month-format="##/YYYY">
+                        <!--第三方日历插件-->
+                    </div>
+                </div>
+            </div>
+
+            <div class="eleven wide column">
+                <div class="ui blue attached segment">
+                        <div class="ui mobile reversed stackable grid">
+                            <div class="sixteen wide column">
+                                    <div >
+                                        <iframe name="my-iframe" id="my-iframe" width="100%" onload="setIframeHeight(this)" frameborder="0" scrolling="no"></iframe>
+                                    </div>
+                                    <div style="height:1px; margin-top:-1px;clear: both;overflow:hidden;"></div>
+                            </div>
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--我发布启示，启示结束的模态框-->
+<div class="ui basic modal" id="modelend">
+    <div class="ui icon header">
+        <i class="bell outline icon"></i>
+        你的启示已经结束
+    </div>
+    <div class="actions">
+        <div class="ui red basic cancel inverted button">
+            <i class="remove icon"></i>
+            取消
+        </div>
+        <div class="ui green ok inverted button">
+            <i class="checkmark icon"></i>
+            确定
+        </div>
+    </div>
+</div>
+<!--我发布启示，启示删除的模态框-->
+<div class="ui basic modal" id="modeldelete">
+    <div class="ui icon header">
+        <i class="bell outline icon"></i>
+        确定要删除该启示吗？
+    </div>
+    <div class="actions">
+        <div class="ui red basic cancel inverted button">
+            <i class="remove icon"></i>
+            取消
+        </div>
+        <div class="ui green ok inverted button">
+            <i class="checkmark icon"></i>
+            确定
+        </div>
+    </div>
+</div>
+<br>
+<br>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.2/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+<script src="js/axios.js"></script>
+<script src="js/mustache.js"></script>
+<script type="text/javascript" src="js/jsCalendar.js"></script>
+    <script>
+
+        // document.domain = "caibaojian.com";
+        function setIframeHeight(iframe) {
+            if (iframe) {
+                var iframeWin = iframe.contentWindow || iframe.contentDocument.parentWindow;
+                if (iframeWin.document.body) {
+                    iframe.height = iframeWin.document.documentElement.scrollHeight || iframeWin.document.body.scrollHeight;
+                }
+            }
+        };
+
+        window.onload = function() {
+            setIframeHeight(document.getElementById('my-iframe'));
+        };
+
+        document.getElementById("mailNum").innerHTML=localStorage.getItem("mailNum");
+        //默认调用
+        userCenter();
+
+        //按照标题实现高级查询
+        function searchPost() {
+            var postTile=$("#searchInfo").val();
+            userCenter(postTile);
+        }
+
+        function userCenter(title){
+
+            var params = {}
+            if (title!=null){
+                params.title = title;
+            }
+
+            //向后台发送请求，渲染我发布的启示和我的个人信息
+            axios.post("http://127.0.0.1:8888/user/userCenter",params).then(function (response) {
+                // var username = localStorage.getItem("username");
+                // console.log(username);
+                console.log(response.data);//成功拿到数据
+                var data = response.data;
+                var myPostList  = data.mypost;
+                var myInfo = data.myInfo;
+
+                console.log(data.mypost)
+
+                //启示信息渲染
+                var postZone = document.getElementById("mypostDiv");
+                let postItem = '';
+                for (let post of myPostList){
+                    console.log("http://127.0.0.1:8888"+post.picture);
+                    var postPic = "http://127.0.0.1:8888"+post.picture;
+                    postItem +=`<div class="item">
+                                            <div class="image">
+                                                <img src="${postPic}">
+                                            </div>
+                                            <div class="content">
+                                                <div class="item">
+                                                    <div ${post.flag==0 ?'' : 'style="display:none;"'}  class="ui orange label horizontal"><i class="search plus icon"></i>寻物启事</div>
+                                                    <div ${post.flag==1 ?'' : 'style="display:none;"' }  class="ui violet label horizontal" ><i class="shopping bag icon"></i>失物招领</div>
+                                                </div>
+                                                <br>
+                                                <a class="header">${post.title}<div ${post.status==1  ?'' : 'style="display:none;"'}  class="ui green label horizontal">进行中</div>
+                                                    <div ${post.status==0  ?'' : 'style="display:none;"'}  class="ui red label horizontal">已结束</div></a>
+
+                                                <div class="description">
+                                                    <p>${post.content}</p>
+                                                </div>
+
+                                                <div class="extra">
+                                                    <div class="ui label"><i class="tags icon"></i>${post.typeName}</div>
+                                                    <div class="ui label"><i class="paper plane icon"></i>${post.address}</div>
+                                                    <div class="ui label"><i class="clock outline icon"></i>${post.ctime}</div>
+                                                     <a ${post.status==1  ?'' : 'style="display:none;"'} href="postInfo.html?postId=${post.id}"><i class="edit outline icon"></i></a>
+                                                    <div class="ui right floated button">
+                                                        <div class="ui buttons">
+                                                            <a onclick="detelePost(${post.id})" class="ui teal button">删除</a>
+                                                            <div ${post.status==1  ?'' : 'style="display:none;"'} class="or"></div>
+                                                            <a ${post.status==1  ?'' : 'style="display:none;"'}  href="javascript:void(0)" onclick="endPost(${post.id})" class="ui blue button"><span></span>结束</a>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                          </div>`;
+                }
+                postZone.innerHTML = postItem;
+
+                let userInfo = "";
+                userInfo = `
+                    <div class="ui top attached segment">
+                        <div class="ui header">我的</div>
+                    </div>
+                    <div class="ui top blue attached segment">
+                        <div class="ui link list">
+                            <div class="active item"><i class="newspaper outline icon"></i>我的启示列表</div>
+                            <a class="active item"  target="my-iframe"><i class="user icon"></i>个人信息</a>
+                            <a class="active item" href="userInfo.html?userId=${myInfo.id}"><i class="edit icon"></i>个人信息编辑</a>
+                            <a class="active item" href="mail测试.html" target="my-iframe"><i class="mail icon"></i>收件箱</a>
+                        </div>
+                    </div>
+            `;
+                //渲染个人信息
+                var userDiv = document.getElementById("userInfoDiv");
+                userDiv.innerHTML = userInfo;
+                var usertype = localStorage.getItem("type");
+                if (usertype=="1"){
+                    $("#adminsys").show();
+                }
+
+
+
+            }).catch(function (error) {
+
+            })
+        }
+
+        /**
+         * 按钮出发 删除功能
+         * @param postId
+         */
+
+        function detelePost(postId) {
+            var values = {}
+            values.postId = postId;
+            $("#modeldelete").modal({
+                closable  : false,
+                onDeny    : function(){
+                    window.location.href="about.html";
+                },
+                onApprove : function() {
+                    axios.post("http://127.0.0.1:8888/post/deleteById",values).then(function (res) {
+                        window.location.href="about.html";
+                    }).catch(function (error) {
+                        console.log(error);
+                    })
+                }
+            }).modal('show')
+            ;
+
+        }
+
+        /**
+         * 结束post的状态
+         */
+        function endPost(postId) {
+            var params = {}
+            params.postId = postId;
+            
+            axios.post("http://127.0.0.1:8888/post/endPost",params).then(function (res) {
+                $("#modelend").modal({
+                    closable  : false,
+                    onApprove : function() {
+                        window.location.href="about.html";
+                    }
+                }).modal('show')
+                ;
+                
+            }).catch(function (error) {
+                
+            })
+             
+        }
+    </script>
+</body>
+</html>

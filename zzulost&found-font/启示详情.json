@@ -1,0 +1,139 @@
+{
+    "id":33,
+    "uname":"kappy",
+    "typeName":"校园卡",
+    "title":"捡到卡",
+    "content":"来认领啦",
+    "picture":"/images/478a18b0c2a245438aa08a81150544b4_1.png",
+    "address":"民餐",
+    "ctime":"2020-12-16 09:21:49",
+    "status":0,
+    "flag":1,
+    "viewCount":117,
+    "counts":null,
+    "user":{
+        "id":33,
+        "admin":null,
+        "username":"kappy",
+        "password":null,
+        "email":null,
+        "sex":"女",
+        "age":21,
+        "photo":null,
+        "rewardCode":"/images/320573054bda4c42b618d0f838efa4c6_erwei.png",
+        "personalSay":"在哪里",
+        "lastTime":null,
+        "type":null
+    },
+    "commentList":[
+        {
+            "id":31,
+            "postId":null,
+            "uname":"kappy",
+            "content":"是我的，你等着",
+            "ctime":"2020-12-16 09:28:51",
+            "parent":null,
+            "childlist":[
+                {
+                    "id":1,
+                    "postId":null,
+                    "uname":"kappy",
+                    "content":"21212121",
+                    "ctime":"2020-12-16 17:42:30",
+                    "parent":null,
+                    "childlist":null
+                }
+            ]
+        },
+        {
+            "id":32,
+            "postId":null,
+            "uname":"kappy",
+            "content":"真是个好人",
+            "ctime":"2020-12-16 09:29:00",
+            "parent":null,
+            "childlist":[
+                {
+                    "id":34,
+                    "postId":null,
+                    "uname":"kappy",
+                    "content":"谢谢",
+                    "ctime":"2020-12-16 09:29:28",
+                    "parent":null,
+                    "childlist":null
+                },
+                {
+                    "id":35,
+                    "postId":null,
+                    "uname":"kappy",
+                    "content":"呃呃呃呃",
+                    "ctime":"2020-12-16 09:29:34",
+                    "parent":null,
+                    "childlist":null
+                },
+                {
+                    "id":36,
+                    "postId":null,
+                    "uname":"kappy",
+                    "content":"飒飒飒飒",
+                    "ctime":"2020-12-16 09:29:42",
+                    "parent":null,
+                    "childlist":null
+                }
+            ]
+        },
+        {
+            "id":66,
+            "postId":null,
+            "uname":"kappy",
+            "content":"333333333",
+            "ctime":"2021-01-12 22:10:07",
+            "parent":null,
+            "childlist":[
+                {
+                    "id":67,
+                    "postId":null,
+                    "uname":"kappy",
+                    "content":"34444444444",
+                    "ctime":"2021-01-12 22:10:19",
+                    "parent":null,
+                    "childlist":null
+                }
+            ]
+        },
+        {
+            "id":33,
+            "postId":null,
+            "uname":"kappy",
+            "content":"目前在哪里",
+            "ctime":"2020-12-16 09:29:10",
+            "parent":null,
+            "childlist":[
+
+            ]
+        },
+        {
+            "id":64,
+            "postId":null,
+            "uname":"kappy",
+            "content":"11111111111",
+            "ctime":"2021-01-12 22:08:31",
+            "parent":null,
+            "childlist":[
+
+            ]
+        },
+        {
+            "id":65,
+            "postId":null,
+            "uname":"kappy",
+            "content":"222222222",
+            "ctime":"2021-01-12 22:09:14",
+            "parent":null,
+            "childlist":[
+
+            ]
+        }
+    ]
+}
+

@@ -1,0 +1,68 @@
+<div class="layuimini-main">
+
+    <div class="layui-form layuimini-form">
+        <div class="layui-form-item">
+            <label class="layui-form-label required">公告标题</label>
+            <div class="layui-input-block">
+                <input type="text" name="title" lay-verify="required" lay-reqtext="公告标题不能为空" placeholder="请输入标题" value="" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label required">公告内容</label>
+            <div class="layui-input-block">
+                <input type="text" name="content" lay-verify="required" lay-reqtext="公告内容不能为空" placeholder="请输入公告内容" value="" class="layui-input">
+                <tip>填写公告内容。</tip>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">用户名</label>
+            <div class="layui-input-block">
+                <input type="cuser" name="cuser"  placeholder="请输入昵称信息" value="" class="layui-input">
+                <tip>填写你的用户名（注意与系统中的名称保持一致）。</tip>
+            </div>
+        </div>
+
+
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn layui-btn-normal" lay-submit lay-filter="saveBtn">确认保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    layui.use(['form', 'table','axios'], function () {
+        var form = layui.form,
+            layer = layui.layer,
+            table = layui.table,
+            axios=layui.axios,
+            $ = layui.$;
+
+        /**
+         * 初始化表单，要加上，不然刷新部分组件可能会不加载
+         */
+        form.render();
+
+        // 当前弹出层，防止ID被覆盖
+        var parentIndex = layer.index;
+
+        //监听提交
+        form.on('submit(saveBtn)', function (data) {
+            var datas=data.field;
+            //获取信息发送信息到后台服务器
+            axios.post('http://localhost:8888/notice/add',datas).then(function (response){
+                if(response.code==200){
+                    layer.msg("添加成功");
+                    // 刷新主页面 table一块
+                    window.reload();
+                }
+                //关闭弹出信息
+                layer.close(parentIndex);
+            }).catch(function (error){
+                layer.msg(data.msg);
+            })
+            return false;
+        });
+
+    });
+</script>

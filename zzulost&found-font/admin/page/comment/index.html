@@ -1,0 +1,177 @@
+<div class="layuimini-container layuimini-page-anim">
+    <div class="layuimini-main">
+
+        <fieldset class="table-search-fieldset">
+            <legend>评论检索</legend>
+            <div style="margin: 10px 10px 10px 10px">
+                <form class="layui-form layui-form-pane" action="">
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">评论内容</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="content" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">评论者</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="uname" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <button type="submit" class="layui-btn layui-btn-primary"  lay-submit lay-filter="data-search-btn"><i class="layui-icon"></i> </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </fieldset>
+
+        <script type="text/html" id="toolbarDemo">
+            <div class="layui-btn-container">
+                <button class="layui-btn layui-btn-sm layui-btn-danger data-delete-btn" lay-event="delete">  <i class="fa fa-trash-o"></i> </button>
+            </div>
+        </script>
+
+        <table class="layui-hide" id="currentTableId" lay-filter="currentTableFilter"></table>
+
+        <script type="text/html" id="currentTableBar">
+            <!-- <div class="layui-inline">
+
+                <a class="layui-btn layui-btn-normal layui-btn-xs data-count-edit" lay-event="query"><i class="fa fa-eye"></i></a>
+            </div> -->
+            <div class="layui-inline">
+
+                <a class="layui-btn layui-btn-xs layui-btn-danger data-count-delete " lay-event="delete"><i class="fa fa-trash-o"></i></a>
+            </div>
+
+
+        </script>
+
+    </div>
+</div>
+
+<script>
+    layui.use(['form', 'table','miniPage','element','axios','laytpl'], function () {
+        var $ = layui.jquery,
+            form = layui.form,
+            table = layui.table,
+            axios=layui.axios,
+            laytpl=layui.laytpl,
+            miniPage = layui.miniPage;
+
+
+        //重新渲染，避免出现下拉框渲染不出的效果。
+        form.render();
+
+        table.render({
+            elem: '#currentTableId',
+            url: 'http://localhost:8888/comment/queryAll',
+            toolbar: '#toolbarDemo',
+            defaultToolbar: ['filter', 'exports', 'print', {
+                title: '提示',
+                layEvent: 'LAYTABLE_TIPS',
+                icon: 'layui-icon-tips'
+            }],
+            cols: [[
+                {type: "checkbox", width: 50},
+                 {field: 'id', width: 80, title: 'ID', sort: true},
+                {field: 'uname', width: 100, title: '发帖人'},
+                {field: 'content', width: 200, title: '内容'},
+                {field: 'ctime', title: '评论时间', width: 180},
+                {title: '操作', minWidth: 80, toolbar: '#currentTableBar', align: "center"}
+            ]],
+            limits: [10, 15, 20, 25, 50, 100],
+            limit: 15,
+            page: true,
+            skin: 'line'
+        });
+
+        // 监听搜索操作
+        form.on('submit(data-search-btn)', function (data) {
+            var content=data.field.content;
+            var uname=data.field.uname;
+            //执行搜索重载
+            table.reload('currentTableId', {
+                page: {
+                    curr: 1
+                }
+                , where: {
+                    content: content,
+                    uname: uname
+                }
+            }, 'data');
+
+            return false;
+        });
+
+        //前台输入数据，后台添加后，刷新页面会整体，但这里只让table刷新
+        window.reload = function () {
+            table.reload("currentTableId")
+        }
+
+
+        /**
+         * toolbar事件监听
+         */
+        table.on('toolbar(currentTableFilter)', function (obj) {
+             if (obj.event === 'delete') {  // 监听批量删除操作
+                var data = table.checkStatus('currentTableId').data;
+                if(data.length==0){
+                    layer.msg("请选择要删除的评论");
+                }else{
+                    //获取要删除记录的id集合
+                    var ids=getCheckId(data);
+                    axios.get('http://127.0.0.1:8888/comment/deleteByIds?ids='+ids).then(function (response){
+                        if(response.code==200){
+                            layer.msg("删除成功");
+                            // 刷新主页面 table一块
+                            window.reload();
+                        }
+                        //关闭弹出信息
+                        // layer.close(parentIndex);
+                    }).catch(function (error){
+                        layer.msg(data.msg);
+                    })
+                }
+            }
+        });
+
+
+        /**
+         * 获取删除id的集合
+         */
+        function getCheckId(data){
+            var arr=new Array();
+            for(var i=0;i<data.length;i++){
+                arr.push(data[i].id);
+            }
+            return arr.join(",");
+        }
+
+        //监听表格复选框选择
+        table.on('checkbox(currentTableFilter)', function (obj) {
+            console.log(obj)
+        });
+
+        table.on('tool(currentTableFilter)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'delete') { //监听单个删除功能
+                layer.confirm('真的删除行么', function (index) {
+                    axios.get('http://localhost:8888/comment/deleteByIds?ids='+data.id).then(function (response){
+                        if(response.code==200){
+                            layer.msg("删除成功");
+                            // 刷新主页面 table一块
+                            window.reload();
+                        }
+                        //关闭弹出信息
+                        // layer.close(parentIndex);
+                    }).catch(function (error){
+                        layer.msg(data.msg);
+                    })
+                    layer.close(index);
+                });
+            }
+        });
+
+    });
+</script>

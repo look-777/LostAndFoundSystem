@@ -1,0 +1,61 @@
+<div class="layuimini-main">
+
+    <div class="layui-form layuimini-form">
+        <div class="layui-form-item">
+            <label class="layui-form-label required">类型名称</label>
+            <div class="layui-input-block">
+                <input type="text" name="typeName" lay-verify="required" lay-reqtext="类型名不能为空" placeholder="请输入类型名" value="" class="layui-input">
+                <tip>填写丢失物品的类型的名称。</tip>
+            </div>
+        </div>
+
+
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn layui-btn-normal" lay-submit lay-filter="saveBtn">确认保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    layui.use(['form', 'table','axios'], function () {
+        var form = layui.form,
+            layer = layui.layer,
+            table = layui.table,
+            axios = layui.axios, //刚开始这个地方写成layer.axios了，出现问题，没反应。
+            $ = layui.$;
+
+        /**
+         * 初始化表单，要加上，不然刷新部分组件可能会不加载
+         */
+        form.render();
+
+        // 当前弹出层，防止ID被覆盖
+        var parentIndex = layer.index;
+
+        //监听提交
+        form.on('submit(saveBtn)', function (data) {
+            //先获取从layui点击后的信息；
+            var datas = data.field;
+            //获取信息后，并发送信息到后端服务器（以往习惯使用Ajax发送，现在用axois处理,其实就是Ajax的二次封装）
+            axios.post('http://127.0.0.1:8888/type/add',datas).then(function (response) {
+                if(response.code==200){
+                    //添加成功
+                    layer.msg("添加成功");
+                    //刷新页面 整个主页面都会刷新
+                    window.reload();
+
+                }
+                // 关闭弹出层
+                layer.close(parentIndex);
+            }).catch(function (error) {
+                layer.msg(data.msg)
+            })
+
+
+
+            return false;
+        });
+
+    });
+</script>

@@ -1,0 +1,284 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我要发布</title>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+	<link rel="stylesheet" href="static/lib/editormd/css/editormd.min.css">
+    <link rel="stylesheet" href="css/me1.css" >
+</head>
+<body>
+<!-- 导航 -->
+<nav class="ui  attached segment m-padded-tb-mini">
+	<div class="ui container">
+		<div class="ui tabular attached stackable menu">
+			<div class="ui container">
+				<div class="item">
+					<img src="img/zzulogo.png" style="width: 60px;height: 60px">
+					<h2 class="ui teal header item">寻物小帮手</h2>
+				</div>
+				<a class="item" href="foundhall.html">
+					<i class="search minus icon"></i>寻物大厅
+				</a>
+				<a class="item" href="losshall.html">
+					<i class="globe icon"></i>失物大厅
+				</a>
+				<a class="item" href="showdata.html">
+					<i class="chart bar outline icon"></i>数据观星
+				</a>
+				<a class="active item" href="announce.html">
+					<i class="edit icon"></i>我要发布
+				</a>
+				<a class="item" href="about.html">
+					<i class="user icon"></i>个人中心
+				</a>
+				<div class="right item">
+					<div class="ui simple dropdown item">
+						<img class="ui avatar image" src="https://unsplash.it/100/100?image=1005">
+						<i class="dropdown icon"></i>
+						<div class="menu">
+							<a class="teal item" target="_blank" href="mail.html"><i class="envelope outline icon"></i>收件箱
+								<div class="ui red label"><span id="mailNum">1</span></div>
+							</a>
+							<a class="item" href="admin/index.html" style="display: none" id="adminsys"><i class="user circle icon"></i>进入管理系统</a>
+							<a class="item" href="feedback.html"><i class="phone square icon"></i>反馈</a>
+							<a class="item" href="login.html"><i class="sign-out icon"></i>退出</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</nav>
+	<!-- 中间内容 -->
+	<div class="m-container m-padded-tb-large">
+		<div class="ui container">
+			<div class="ui grid">
+				
+				<div class="twenty wide column">
+					
+					<!-- header -->
+					<div class="ui top attached segment ">
+						<div class="ui middle aligned two column grid">
+							<div class="column">
+								<h3 class="ui teal header">发布</h3>
+							</div>
+							
+						</div>
+					</div>
+					<!-- content -->
+                    <form class="ui attached segment form" name="uploadForm" id="uploadForm" method="post" enctype="multipart/form-data">
+						<div class="ui padded vertical segment m-padded-tb-large">
+							<div class="ui mobile reversed stackable grid">
+								    <div class="ui form" >
+								        <div class="field">
+											<label ><span class="ui header">类型:</span></label>
+											<div class="inline fields">
+												<div class="field">												
+												<div class="ui radio checkbox">
+													<input type="radio" name="flag"  value="0" >
+													<label>失物挂失</label>
+												</div>
+												</div>
+												<div class="field">
+												<div class="ui radio checkbox">
+													<input type="radio" name="flag" value="1" >
+													<label>拾物登记</label>
+												</div>
+												</div>
+											</div>
+								        </div>
+								        <div class="field" id="typeDiv">
+											<script type="text/tmplate" id="typeTmp">
+											
+												<label><span class="ui header">分类:</span></label>
+												<select class="ui search dropdown" name="typeName">
+													<option value="">-请选择一个类别-</option>
+													{{#data}}
+													<option value="{{typeName}}">{{typeName}}</option>
+													{{/data}}
+												</select>
+											</script>
+											
+								        </div>
+										<div class="field"></div>
+								    </div>
+									
+									<div class="ui form" style="width: 100%; height: 100%;min-height:100px">
+										<div class="required field">
+											<label><span class="ui header">标题:</span></label> 
+											<input name="title" type="text"   maxlength="20">
+											 <div class="ui pointing label">
+												 标题最多20字符
+											 </div>
+										 </div>
+									    <div class="field ">
+											<label><span class="ui header">详情:</span></label>
+											<div id="md-content" style="z-index: 1 !important;">
+											<!-- mardown区域 -->
+											<textarea name="content"  placeholder="启示详情" style="display: none"></textarea>
+											</div>
+											<div class="ui pointing label">
+											对物品进行简要描述
+											</div>
+									    </div>
+										<div class="field">
+										    <label><span class="ui header">图片:</span></label>
+										    <div id="imgPreview">
+										     <div id="prompt3">
+										     <span id="imgSpan" class="ui center">
+												<p class="m-text-thin m-text-spaced m-opacity-mini" >点击上传</p>
+												<i class="large upload icon"></i>
+										     </span>
+										     <input name="upload" type="file" id="file" class="filepath" onchange="changepic(this)" accept="image/jpg,image/jpeg,image/png,image/PNG">
+										     <!--当vaule值改变时执行changepic函数，规定上传的文件只能是图片-->
+										     </div>
+										     <img style="width: 150px;height: 150px" src="" id="img3" />
+										    </div>
+											<div class="ui pointing label">
+												图片是必须的哟，目前支持jpg,jpeg,png,PNG后缀的图片。
+											</div>
+											
+										</div>
+										<div class="field">
+										    <label><span class="ui header">地点:</span></label>
+										    <input name="address" type="text" maxlength="25"  placeholder="选填">
+											<div class="ui pointing label">
+												地点越准，找回的成功率就越大哟
+											</div>
+										</div>
+										<div class="actions">
+										    <input type="button" onclick="addInfo()" class="ui primary right floated m-margin-tb-large  button" value="确认">
+										    <input type="button" class="ui right floated m-margin-tb-large button" value="取消">
+										</div>
+									</div>
+
+							</div>
+						</div>
+                    </form>
+					<!--消息提示框-->
+					<div class="field">
+						<div class="ui negative message" style="display: none" id="msgDiv">
+							<i class="close icon"></i>
+							<div class="header">
+								提示
+							</div>
+							<p id="msg"></p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>	
+
+    <!--	/*/<th:block th:replace="fragment::script">/*/-->
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.2/dist/jquery.min.js"></script>
+<script src="js/semantic.min.js"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/mustache.js/4.1.0/mustache.js"></script>
+<script src="static/lib/editormd/editormd.min.js"></script>
+<script src="js/axios.js"></script>
+
+    <!--    /*/</th:block>/*/-->
+    <script>
+		document.getElementById("mailNum").innerHTML=localStorage.getItem("mailNum");
+
+		var userType = localStorage.getItem("type");
+		if (userType=="1"){
+			$("#adminsys").show();
+		}
+		//添加启示信息
+		function addInfo() {
+			//获取值信息
+			//并发送信息到后台
+			//后台新增数据后跳转到主页
+
+			var flag = uploadForm.flag.value;
+			var title = uploadForm.title.value;
+			var typeName = uploadForm.typeName.value;
+			var content = uploadForm.content.value;
+			var upload = document.getElementById("file").files[0];
+			var address = uploadForm.address.value;
+			
+			var values = {};
+			values.flag=flag;
+			values.title=title;
+			values.typeName=typeName;
+			values.content=content;
+			values.upload=upload;
+			values.address=address;
+
+			//借助formData上传
+			// 将form表单元素的name与value进行组合，实现表单数据的序列化，从而减少表单元素的拼接，提高工作效率,异步上传文件
+			//使用方法参考博客 https://www.jianshu.com/p/e984c3619019
+			var formdata = new FormData();
+			formdata.append("upload",upload);//拼接图片
+			formdata.append("post",new Blob([JSON.stringify(values)],{type:"application/json"}));//将表单字段快速拼接成key-value
+			console.log(formdata.post);
+
+
+			//添加的请求头部信息 enctype="multipart/form-data"  multipart/form-data上面表单  上传图片的信息 这样才能添加
+			let config={headers:{'Content-Type':'multipart/form-data'}}
+
+			axios.post("http://127.0.0.1:8888/post/addPost",formdata,config).then(function (response) {
+				if (flag=="0"){
+					//跳转到寻物
+					window.location.href="foundhall.html";
+				}
+				if (flag=="1"){
+					//跳转到失物
+					window.location.href="losshall.html";
+				}
+			}).catch(function (error) {
+			})
+		}
+
+		//发送请求
+		axios.post("http://127.0.0.1:8888/type/queryTypeList").then(function (response) {
+			console.log(response)
+
+			//创建type模板
+			var tem = document.getElementById("typeTmp").innerHTML;
+			var s = Mustache.render(tem,response);
+			document.getElementById("typeDiv").innerHTML = s;
+		}).catch(function (error) {
+			
+		})
+
+		//初始化markdown编辑器
+		var contentEditor;
+		$(function() {
+			contentEditor = editormd("md-content", {
+				width   : "100%",
+				height  : 350,
+				syncScrolling : "single",
+				path : "static/lib/editormd/lib/" //路径一定要写对,这个插件要自动寻找static文件夹的
+			});
+
+			/*
+            // or
+            testEditor = editormd({
+                id      : "test-editormd",
+                width   : "90%",
+                height  : 640,
+                path    : "../lib/"
+            });
+            */
+		});
+
+		function changepic() {
+         $("#prompt3").css("display", "none");
+         var reads = new FileReader();
+         f = document.getElementById('file').files[0];
+         reads.readAsDataURL(f);
+         reads.onload = function(e) {
+         document.getElementById('img3').src = this.result;
+         $("#img3").css("display", "block");
+         };
+        }
+        
+    </script>
+
+</body>
+</html>

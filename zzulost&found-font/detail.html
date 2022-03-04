@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+        <meta charset="UTF-8">
+        <meta name="viewpoint" content="width=device-width, initial-scale=1.0">
+        <title>详情</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+        <link rel="stylesheet" type="text/css" href="css/me1.css">
+        <link rel="stylesheet" type="text/css" href="css/typo.css">
+        <link rel="stylesheet" type="text/css" href="css/animate.css">
+        <link rel="stylesheet" type="text/css" href="static/lib/prism/prism.css">
+    </head>
+</head>
+ <body>
+ <!--导航-->
+ <nav class="ui  attached segment m-padded-tb-mini">
+     <div class="ui container">
+         <div class="ui tabular attached stackable menu">
+             <div class="ui container">
+                 <div class="item">
+                     <img src="img/zzulogo.png" style="width: 60px;height: 60px">
+                     <h2 class="ui teal header item">寻物小帮手</h2>
+                 </div>
+                 <a class="item" href="foundhall.html"><i class="search minus icon"></i>寻物大厅</a>
+                 <a class="item" href="losshall.html"><i class="globe icon"></i>失物大厅</a>
+                 <a class="item" href="showdata.html">
+                     <i class="chart bar outline icon"></i>数据观星
+                 </a>
+                 <a class="item" href="announce.html">
+                     <i class="edit icon"></i>我要发布
+                 </a>
+                 <a class="item" href="about.html">
+                     <i class="user icon"></i>个人中心
+                 </a>
+                 <div class="right item">
+                     <div class="ui simple dropdown item">
+                         <img class="ui avatar image" src="https://unsplash.it/100/100?image=1005">
+                         <i class="dropdown icon"></i>
+                         <div class="menu">
+                             <a class="teal item" target="_blank" href="mail.html"><i class="envelope outline icon"></i>收件箱
+                                 <div class="ui red label">1</div>
+                             </a>
+                             <a class="item" href="admin/index.html" id="adminsys" style="display: none"><i class="user circle icon"></i>进入管理系统</a>
+                             <a class="item" href="feedback.html"><i class="phone square icon"></i>反馈</a>
+                             <a class="item" href="login.html"><i class="sign-out icon"></i>退出</a>
+                         </div>
+                     </div>
+                 </div>
+             </div>
+         </div>
+     </div>
+ </nav>
+<!--中间内容-->
+<div id="waypoint" class="m-container m-padded-tb-big animated fadeIn">
+    <div class="ui container">
+        <div class="ui stackable grid">
+            <div class="eleven wide column" >
+                <div class="ui top attached segment">
+
+                    <div class="ui horizontal link list">
+                        <div class="item">
+                            <img src="https://unsplash.it/100/100?image=1005" alt="" id="photo" class="personal ui avatar image" data-postid="33">
+                            <div class="content"><span id="uname">张浩堃</span> </div>
+                        </div>
+                        <div class="item">
+                            <i class="clock outline icon"></i><span id="ctime"></span>
+                        </div>
+                        <div class="item">
+                            <i class="eye icon"></i><span id="viewCount"></span>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="ui  attached padded segment" id="postInfo">
+                    <!-- 内容-->
+                    <h4 class="ui center aligned header"><span id="title">标题</span></h4>
+                    <div id="content" class="typo  typo-selection js-toc-content m-padded-lr m-padded-tb-large">
+                        <span id="postContent">内容</span>
+                    </div>
+                    <br>
+                    <!-- 标签-->
+                    <div class="m-padded-lr">
+                        <i class="tags icon"></i><span id="type">类型</span>
+                        <i class="map marker icon"></i><span id="address">地点</span>
+                        <a href="javascript:void(0)" onclick="remind()" class="right aligned ui teal button"><i class="bell outline icon"></i>一键通知</a>
+                    </div>
+                </div>
+
+                <div id="comment-container" class="ui bottom attached segment">
+                    <!-- 留言区域列表-->
+                    <div class="ui teal segment">
+                        <h3 class="ui dividing header">评论</h3>
+                        <div class="ui threaded comments" id="commentDiv">
+                        </div>
+                        <!--评论回复表单-->
+                        <div  class="ui form" id="commentForm">
+                            
+                        </div>
+
+
+                    </div>
+
+                </div>
+            </div>
+            <div class="five wide column" >
+                <div class="ui top attached red segment">
+                    <div class="ui animated fade button" tabindex="0" style="width: 100%">
+                        <div class="visible content" ><i class="ui hand point down icon"></i>你可能想找</div>
+                        <div class="hidden content">
+                            我们为你推送了一些相似的物品
+                        </div>
+                    </div>
+                </div>
+                <div class="ui bottom attached red segment" id="remDiv">
+                        <div class="ui padded vertical segment m-padded-tb-large m-mobile-lr-clear">
+                            <div class="ui mobile reversed stackable grid">
+                                <div class="eleven wide column">
+                                    <h3 class="ui header">标题</h3>
+                                </div>
+
+                                <div class="five wide column">
+                                    <a href="#" target="_blank">
+                                        <img src="https://unsplash.it/100/100?image=1005"  alt="" class="ui rounded image" style="height: 60px;width: 60px">
+                                    </a>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+ <!--认领物品的模态框-->
+ <div class="ui basic modal" id="modelclaim">
+     <div class="ui icon header">
+         <i class="bell outline icon"></i>
+         是否需要向失主发送邮件提醒。
+     </div>
+     <div class="actions">
+         <div class="ui red basic cancel inverted button">
+             <i class="remove icon"></i>
+             暂不
+         </div>
+         <div class="ui green ok inverted button">
+             <i class="checkmark icon"></i>
+             确定
+         </div>
+     </div>
+ </div>
+ <!--消息发送成功模态框-->
+ <div class="ui basic modal" id="modelmessage">
+     <div class="ui icon header">
+         <i class="bell outline icon"></i>
+         留言发布成功。
+     </div>
+     <div class="actions">
+         <div class="ui green ok inverted button">
+             <i class="checkmark icon"></i>
+             确定
+         </div>
+     </div>
+ </div>
+
+<br>
+<!--	/*/<th:block th:replace="fragment::script">/*/-->
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.2/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+<script src="js/jquery.min.js"></script>
+<script src="js/semantic.min.js"></script>
+<script src="js/axios.js"></script>
+<script src="admin/js/config.js"></script>
+<script src="js/mustache.js"></script> 
+<!--    /*/</th:block>/*/-->
+
+    <script>
+
+        $('.ui.checkbox')
+            .checkbox()
+        ;
+
+        $('.menu.toggle').click(function (){
+            $('.m-item').toggleClass('m-mobile-hide');
+        });
+
+        //从url中获取传参的值 例如：detail.html?postId=33 就会将postId=33匹配出来
+        function getQueryString(name) {
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+            var r = window.location.search.substr(1).match(reg);
+            if (r != null) return decodeURI(r[2]); return null;
+        }
+
+            var postId = getQueryString("postId");
+            var values = {}
+            values.postId = postId;
+            console.log("postId"+postId)
+            
+            //发送axios请求
+            axios.post("http://127.0.0.1:8888/post/queryCommentList",values).then(function (res) {
+
+             // console.log(res.data);
+             var data = res.data;
+             var commentList = data.commentList;
+
+             //渲染启示的详细信息 这一块用el表达式，因为增加了一个“一键通知的按钮"
+              $("#ctime").html(data.ctime);
+              $("#viewCount").html(data.viewCount);
+              $("#uname").html(data.uname);
+
+             let postContent = "";
+                postContent=`
+                    <div class="ui two column grid">
+                        <div class="column">
+                            <div class="ui raised segment">
+                                <div class="ui attached segment">
+                                <img id="bigphoto" alt="" src="${SURL+data.picture}" class="ui fluid rounded image" style="width: 300px;height: 300px">
+                            </div>
+                                <a class="ui red ribbon label">标题</a>
+                                <div class="ui center aligned header">${data.title}</div>
+                            </div>
+                        </div>
+                        <div class="column">
+                            <div class="ui top attached segment">
+                                <a class="ui blue ribbon label">内容</a>
+                                <p>${data.content}</p>
+                                <a class="ui orange right ribbon label">相关特征</a>
+
+                                <div>
+                                    <i class="tags icon"></i><span id="type">${data.typeName}</span>
+                                    <i class="map marker icon"></i><span id="address">${data.address}</span>
+                                </div>
+                            </div>
+                            <div class="ui bottom attached segment" >
+                                <a href="javascript:void(0)" onclick="remind(${data.id})" class="ui center teal button"><i class="envelope outline icon"></i>一键通知</a>
+                            </div>
+                        </div>
+                    </div>`;
+            document.getElementById("postInfo").innerHTML = postContent;
+
+            let commentform =  `
+            <div class="field">
+                        <textarea name="content" id="comment" placeholder="请输入评论内容......"></textarea>
+                    </div>
+                    <div class="fields">
+                        <div class="field">
+                            <div class="ui action input">
+                                <select class="ui compact selection dropdown" id="secret">
+                                    <option value="0"><small>隐私选项</small></option>
+                                    <option value="0"><small>不匿名评论</small></option>
+                                    <option value="1"><small>匿名评论</small></option>
+                                </select>
+                            </div>
+
+                        </div>
+
+                        <div class="field m-mobile-wide m-margin-bottom-small">
+                            <a onclick="addComment(${data.id})" id="commentpost-btn" type="button" class="ui teal button m-mobile-wide"><i class="edit icon"></i>留言</a>
+                        </div>
+                    </div>
+            `;
+            document.getElementById("commentForm").innerHTML = commentform;
+
+
+                   
+            //渲染评论区域
+                let commentContent = "";
+                let i = 1;
+                for(let comment of commentList){
+                    commentContent+=`
+                <div class="comment">
+                            <a class="avatar">
+                                <img src="https://unsplash.it/100/100?image=1005"
+                                           class="reply image ui" data-commentid="31">
+                            </a>
+                            <div class="content">
+                                <a class="author">${comment.uname}</a>
+                                <div class="metadata">
+                                    <span class="date">${comment.ctime}</span>
+                                    <span class="date">#${i}楼</span>
+                                </div>
+                                <div class="text">
+                                    <p>${comment.content}</p>
+                                </div>
+                            </div>
+                        </div>`
+                    i = i+1;
+                }
+            document.getElementById("commentDiv").innerHTML=commentContent;
+
+            var usertype = localStorage.getItem("type");
+            if (usertype=="1"){
+                    $("#adminsys").show();
+              }
+
+            }).catch(function (error) { 
+
+                   })
+
+        //用户推荐
+        axios.post("http://127.0.0.1:8888/post/recommend",values).then(function (res) {
+            console.log("111")
+            console.log(res.data.remlist);//成功拿到数据
+            var remlist = res.data.remlist
+            console.log("222")
+            let remcontent="";
+            for (let rem of remlist){
+                var picture = SURL+rem.picture;
+                remcontent+=`<div class="ui padded vertical segment m-padded-tb-large m-mobile-lr-clear">
+                            <div class="ui mobile reversed stackable grid">
+                                <div class="eleven wide column">
+                                    <h4 class="ui header">${rem.title}</h4>
+                                </div>
+
+                                <div class="five wide column">
+                                    <a href="detail.html?postId=${rem.id}">
+                                        <img src="${picture}"  alt="" class="ui rounded image" style="height: 60px;width: 60px">
+                                    </a>
+                                </div>
+
+                            </div>
+                        </div>`;
+            }
+            document.getElementById("remDiv").innerHTML = remcontent;
+        }).catch(function (error) {
+
+        })
+
+
+       
+        /**
+         * 一键提醒
+         */
+        function remind(postId) {
+            //请求发送邮件服务接口-----暂未开通
+            $("#modelclaim").modal({
+                closable  : false,
+                onDeny    : function(){
+                },
+                onApprove : function() {
+                    axios.post("http://127.0.0.1:8888/mail/sendMail",values).then(function (res) {
+                        alert("发送成功~")
+                        window.location.href="detail.html?postId="+postId;
+                    }).catch(function (error) {
+                        
+                    })
+                }
+            }).modal('show');
+        }
+
+        /**
+         * 评论回复功能
+         */
+
+        function addComment(postId){
+            var params={}
+            params.postId = postId;
+            params.postId = postId;
+            //成功拿到各种选项的值信息
+            var secretOption = $("#secret").val();
+            var comment = $("#comment").val();
+            
+            params.secretOption = secretOption;
+            params.comment = comment;
+            
+            axios.post("http://127.0.0.1:8888/comment/addComment",params).then(function (res) {
+                $("#modelmessage").modal({
+                    closable  : false,
+                    onApprove : function() {
+                        window.location.href="detail.html?postId="+postId;
+                    }
+                }).modal('show');
+            }).catch(function (error) {
+                
+            })
+
+        }
+
+    </script>
+</body>
+</html>

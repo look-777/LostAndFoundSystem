@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhanghk.dao.PostDao">
+
+
+    <resultMap type="com.zhanghk.entity.Post" id="PostMap">
+        <id property="id" column="id"/>
+        <result property="uname" column="uname"/>
+        <result property="typeName" column="type_name" />
+        <result property="title" column="title"/>
+        <result property="content" column="content"/>
+        <result property="picture" column="picture"/>
+        <result property="address" column="address"/>
+        <result property="ctime" column="ctime"/>
+        <result property="status" column="status"/>
+        <result property="flag" column="flag"/>
+        <result property="viewCount" column="view_count"/>
+    </resultMap>
+
+
+    <resultMap id="queryInfoByIdMap" type="com.zhanghk.entity.Post" extends="PostMap">
+        <association property="user" javaType="com.zhanghk.entity.User">
+            <id property="id" column="id"/>
+            <result property="username" column="username"/>
+            <result property="age" column="age" />
+            <result property="sex" column="sex"/>
+            <result property="email" column="email"/>
+            <result property="personalSay" column="personal_say"/>
+            <result property="rewardCode" column="reward_code"/>
+        </association>
+<!--  property属性值与post中的成员对象 commentList保持一致     -->
+        <collection property="commentList" ofType="com.zhanghk.entity.Comment">
+            <id property="id" column="cid"/>
+            <result property="ctime" column="ctimes"/>
+            <result property="uname" column="unames" />
+            <result property="content" column="contents"/>
+
+        </collection>
+    </resultMap>
+
+    <!--查询单个启示的详细信息，返回类型更复杂，需要自己组装-->
+    <select id="queryInfoById" resultMap="queryInfoByIdMap" parameterType="integer">
+        SELECT
+        p.*, u.username,
+        u.sex,
+        u.age,
+        u.personal_say,
+        u.reward_code,
+        c.content AS contents,
+        c.ctime AS ctimes,
+        c.uname AS unames,
+        c.id AS cid,
+        c.post_id AS postId
+    FROM
+        post p
+    LEFT JOIN tb_user u ON u.username = p.uname
+    LEFT JOIN `comment` c ON c.post_id = p.id
+    WHERE
+        p.id = #{id}
+    </select>
+
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultType="com.zhanghk.entity.Post" parameterType="com.zhanghk.entity.Post">
+        select
+        id, uname, type_name, title, content, picture, address, ctime, status, flag, view_count
+        from swzl.post
+        <where>
+
+            <if test="typeName != null and typeName != ''">
+                and type_name = #{typeName}
+            </if>
+            <if test="title != null and title != ''">
+                and title like '%${title}%'
+            </if>
+            <if test="content != null and content != ''">
+                and content like '%${content}%'
+            </if>
+            <if test="uname != null and uname != ''">
+                and uname = #{uname}
+            </if>
+
+            <if test="address != null and address != ''">
+                and address like '%${address}%'
+            </if>
+            <if test="ctime != null">
+                and ctime = #{ctime}
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+            <if test="flag != null">
+                and flag = #{flag}
+            </if>
+
+        </where>
+        order by ctime desc
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" parameterType="com.zhanghk.entity.Post">
+        insert into swzl.post(uname, type_name, title, content, picture, address, ctime, status, flag, view_count)
+        values (#{uname}, #{typeName}, #{title}, #{content}, #{picture}, #{address}, #{ctime}, #{status}, #{flag}, #{viewCount})
+    </insert>
+
+
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update swzl.post
+        <set>
+            <if test="uname != null and uname != ''">
+                uname = #{uname},
+            </if>
+            <if test="typeName != null and typeName != ''">
+                type_name = #{typeName},
+            </if>
+            <if test="title != null and title != ''">
+                title = #{title},
+            </if>
+            <if test="content != null and content != ''">
+                content = #{content},
+            </if>
+            <if test="picture != null and picture != ''">
+                picture = #{picture},
+            </if>
+            <if test="address != null and address != ''">
+                address = #{address},
+            </if>
+            <if test="ctime != null">
+                ctime = #{ctime},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="flag != null">
+                flag = #{flag},
+            </if>
+            <if test="viewCount != null">
+                view_count = #{viewCount},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from swzl.post where id = #{id}
+    </delete>
+
+    <!--根据状态 查询具体的记录数-->
+    <select id="getCountsByFlagAndStatus"  resultType="int">
+        select count(id) from post where flag=#{flag} and status=#{status}
+    </select>
+
+    <select id="getCountsByMon" resultType="int">
+        select count( * ) from post where ctime between #{startTime} and #{endTime}
+    </select>
+
+    <select id="recommend" resultType="com.zhanghk.entity.Post" parameterType="com.zhanghk.entity.Post">
+        select
+        id, title, picture
+        from swzl.post
+        where
+        title like '%${title}%' and id!=#{id}
+        limit 3
+    </select>
+
+</mapper>

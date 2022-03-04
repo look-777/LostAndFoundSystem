@@ -1,0 +1,97 @@
+<style>
+    .layui-form-item .layui-input-company {
+        width: auto;
+        padding-right: 10px;
+        line-height: 38px;
+    }
+</style>
+<div class="layuimini-container layuimini-page-anim">
+    <div class="layuimini-main">
+
+        <div class="layui-form layuimini-form" lay-filter="updatePwd">
+            <input type="hidden" name="id">
+            <div class="layui-form-item">
+                <label class="layui-form-label required">旧的密码</label>
+                <div class="layui-input-block">
+                    <input type="password" name="oldpwd" lay-verify="required" lay-reqtext="旧的密码不能为空" placeholder="请输入旧的密码" value="" class="layui-input">
+                    <tip>填写自己账号的旧的密码。</tip>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label required">新的密码</label>
+                <div class="layui-input-block">
+                    <input type="password" name="newpwd" lay-verify="required" lay-reqtext="新的密码不能为空" placeholder="请输入新的密码" value="" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label required">确认密码</label>
+                <div class="layui-input-block">
+                    <input type="password" name="newpwd2" lay-verify="required" lay-reqtext="新的密码不能为空" placeholder="请再次输入新的密码" value="" class="layui-input">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button class="layui-btn layui-btn-normal" lay-submit lay-filter="updatePwd">确认修改</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    layui.use(['form', 'miniPage','axios'], function () {
+        var form = layui.form,
+            layer = layui.layer,
+            axios = layui.axios,
+            miniPage = layui.miniPage;
+
+        /**
+         * 初始化表单，要加上，不然刷新部分组件可能会不加载
+         */
+        form.render();
+
+        // 当前弹出层，防止ID被覆盖
+        var parentIndex = layer.index;
+
+        //监听提交
+        form.on('submit(updatePwd)', function (data) {
+
+            //向后台发送请求
+
+            /**
+             * 步骤
+             * 1.接收数据
+             * 2.判断两次输入的新密码是否一致
+             * 3.向后台发送请求
+             * 4.提示信息，刷新页面table
+             */
+            var datas = data.field;
+            if (datas.newpwd != datas.newpwd2){
+                layer.msg("两次输入密码不一致，请重新输入密码!");
+            }else {
+                axios.post('http://localhost:8888/user/update',datas).then(function (response){
+                    if(response.code==200){
+                        layer.msg("修改成功");
+                        // 刷新主页面 table一块
+                        window.reload();
+                    }
+                    //关闭弹出信息
+                    layer.close(parentIndex);
+                }).catch(function (error){
+                    layer.msg(data.msg);
+                })
+            }
+
+            // var index = layer.alert(JSON.stringify(data.field), {
+            //     title: '最终的提交信息'
+            // }, function () {
+            //     layer.close(index);
+            //     miniPage.hashHome();
+            // });
+            // return false;
+        });
+
+    });
+</script>
