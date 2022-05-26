@@ -2,7 +2,7 @@
 
 > 作者：[zhanghaok](https://github.com/zhanghaok)
 > 
-> 类型项目[任务打卡demo--类似于ToDolist此类的软件](https://github.com/zhanghaok/dailytask)
+> 类似项目：[任务打卡demo--类似于ToDolist此类的软件](https://github.com/zhanghaok/dailytask)
 > 
 > 时间：2021年4月-5月
 
